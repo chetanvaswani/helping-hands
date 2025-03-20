@@ -1,16 +1,23 @@
+"use client"
 import AddressCard from "@/components/AddressCard";
 import Button from "@/components/Button";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdAddLocationAlt } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 
 export default function Address(){
+    const router = useRouter()
     return (
         <div className="h-screen overflow-hidden w-full bg-gray-100 flex flex-col items-center">
             <div className="h-[50px] flex items-center gap-2 w-[90%] m-2">
-                <IoIosArrowDown className="size-4 stroke-1 mt-1" />
-                <h2 className="font-semibold text-xl">
-                    Select a location
-                </h2>
+                <div  className="flex gap-2 cursor-pointer" onClick={() => {
+                    router.push("/home")
+                }}>
+                    <IoIosArrowDown className="size-4 stroke-1 mt-2" />
+                    <h2 className="font-semibold text-xl">
+                        Select a location
+                    </h2>
+                </div>
             </div>
             <div className="w-[90%] flex flex-col">
                 <Button text="Add a new address" variant="light" startIcon={<MdAddLocationAlt className="size-7 stroke-0 -mt-1" />} />

@@ -19,17 +19,17 @@ export default function Checkout(){
     const [selectedDuration, setSelectedDuration] = useState<Duration['name']>("once")
 
     return (
-        <div className="w-full h-full flex flex-col items-center ">
-            <div className="w-[95%] flex justify-center items-center" >
-                <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 ml-2 border-b-2 border-gray-200" onClick={() => {
+        <div className="w-full h-full flex flex-col items-center bg-gray-100 h-screen ">
+            <div className="w-full px-2 flex justify-center items-center bg-white" >
+                <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 border-b-2 border-gray-200" onClick={() => {
                     router.push('/home')
                 }} />
                 <LocationSelector title={"Home"} subTitle={"Vaishali Nagar Bhilai"} />
             </div>
             <div className=" w-[90%] flex items-center flex-col gap-4 mt-5">
                 <BookingDurationSlider selectedDuration={selectedDuration} setSelectedDuration={setSelectedDuration} />
-                <div className="flex bg-gray-100 h-[50px] rounded-lg w-[95%] p-4 items-center">
-                    <input className="bg-gray-100 w-full outline-0 " type="number" placeholder="Enter number of hours" min={1} max={4} onChange={(e) => {
+                <div className="flex bg-white h-[50px] shadow-md rounded-lg w-[95%] p-4 items-center">
+                    <input className="bg-white w-full outline-0 " type="number" placeholder="Enter number of hours" min={1} max={4} onChange={(e) => {
                         if (parseInt(e.target.value) > 4 || parseInt(e.target.value) < 1){
                             e.target.value = ""
                             e.target.placeholder = "Value must be between 1-4"
@@ -40,11 +40,11 @@ export default function Checkout(){
                     }} />
                     <TbListNumbers className="size-6 text-gray-500 stroke-[1.5px] " />
                 </div>
-                <div className="flex bg-gray-100 h-[50px] rounded-lg w-[95%] p-4 items-center">
-                    <input className="bg-gray-100 w-full outline-0 " placeholder="Enter Cupon Code" />
+                <div className="flex bg-white shadow-md h-[50px] rounded-lg w-[95%] p-4 items-center">
+                    <input className="bg-white w-full outline-0 " placeholder="Enter Cupon Code" />
                     <CiDiscount1 className="size-7 text-gray-500" />
                 </div>
-                <div className="w-[95%] bg-gray-100 p-4 rounded-xl font-semibold flex flex-col gap-1">
+                <div className="w-[95%] bg-white shadow-md p-4 rounded-xl font-semibold flex flex-col gap-1">
                     <div className="flex justify-between ">
                         <p className="">Amount</p>
                         <p>₹149</p>
