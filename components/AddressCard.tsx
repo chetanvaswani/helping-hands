@@ -33,7 +33,7 @@ export default function AddressCard({name, type, address} : AddressCardInterface
                 </div>
             </div>
             <div className="w-[10%] flex flex-col gap-2 text-gray-500 items-end">
-                <SlOptionsVertical className="mt-1" />
+                <SlOptionsVertical className="mt-1 cursor-pointer" />
             </div>
         </div>
     )

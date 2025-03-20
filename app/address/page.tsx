@@ -1,7 +1,7 @@
 import AddressCard from "@/components/AddressCard";
+import Button from "@/components/Button";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdAddLocationAlt } from "react-icons/md";
-
 
 export default function Address(){
     return (
@@ -12,9 +12,8 @@ export default function Address(){
                     Select a location
                 </h2>
             </div>
-            <div className="w-[90%] shadow-md rounded-lg p-3 gap-2 justify-center items-center flex h-[50px] bg-white">
-                <MdAddLocationAlt className="size-7 stroke-0 -mt-1" />
-                <div className="font-semibold">Add a new address</div>
+            <div className="w-[90%] flex flex-col">
+                <Button text="Add a new address" variant="light" startIcon={<MdAddLocationAlt className="size-7 stroke-0 -mt-1" />} />
             </div>
             <div className="inline-flex items-center justify-center w-full">
                 <hr className="w-[80%] h-[2px] my-8 bg-gray-200 border-0 rounded-sm" />
