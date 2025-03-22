@@ -6,9 +6,11 @@ import { VscAccount } from "react-icons/vsc";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
+import { usePathname } from 'next/navigation'
 
 export default function Footer(){
-  const [currPage, setCurrPage] = useState<"home" | "help" | "account">("home")
+  const pathname = usePathname()
+  const [currPage, setCurrPage] = useState(pathname.replace("/", ''))
 
   return (
     <div className="overflow-hidden fixed bottom-0 left-0 w-full bg-black flex justify-evenly items-center z-10 h-[60px]">
@@ -23,7 +25,7 @@ interface FooterButtonProps {
   Active: React.ElementType,
   InActive: React.ElementType,
   name: "home" | "help" | "account",
-  currPage: "home" | "help" | "account",
+  currPage: string,
   setCurrPage: (str: "home" | "help" | "account") => void,
 }
 
