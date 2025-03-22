@@ -1,6 +1,8 @@
 import { TbCurrentLocation } from "react-icons/tb";
 import LocationSelector from "@/components/LocationSelector";
 import ServiceCard from "@/components/ServiceCard";
+import { getServerSession } from "next-auth/next";
+import {authOptions} from "@/lib/auth";
 
 
 export interface servicesInterface{
@@ -15,7 +17,10 @@ const SERVICES : servicesInterface[] = [
     { name: "Cook", img: "/cook.png", active: false },
 ]
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+
+  console.log(session?.user.mobileNumber)
   return (
     <div className="w-full flex-col h-full flex overflow-hidden">
       <div className="fixed top-0 w-full z-10">

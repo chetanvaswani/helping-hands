@@ -5,7 +5,7 @@ export default function PagesLayout({children}: Readonly<{
   }>){
     return (
         <>
-        <div className="h-full bg-gray-50 w-full flex flex-col items-center justify-between overflow-x-hidden overflow-y-hidden ">
+        <div className="h-svh bg-gray-50 w-full flex flex-col items-center justify-between overflow-x-hidden overflow-y-hidden ">
             <div className="w-full h-[calc(100%-60px)] overflow-hidden">
                 {children}
             </div>
