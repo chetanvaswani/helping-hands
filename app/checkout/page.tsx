@@ -19,7 +19,7 @@ export default function Checkout(){
     const [selectedDuration, setSelectedDuration] = useState<Duration['name']>("once")
 
     return (
-        <div className="w-full h-full flex flex-col items-center bg-gray-100 h-screen ">
+        <div className="w-full h-svh flex flex-col items-center bg-gray-100 ">
             <div className="w-full px-2 flex justify-center items-center bg-white" >
                 <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 border-b-2 border-gray-200" onClick={() => {
                     router.push('/home')

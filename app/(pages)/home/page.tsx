@@ -26,7 +26,7 @@ export default async function Home() {
       <div className="fixed top-0 w-full z-10">
         <LocationSelector title={"Welcome"} subTitle={"Vaishali Nagar Bhilai"} Icon={<TbCurrentLocation className="mr-5 w-8 h-8" />} />
       </div>
-      <div className=" relative pb-[90px] top-[70px] py-5 h-[calc(100%-70px)] overflow-y-scroll w-full flex flex-col items-center">
+      <div className=" relative top-[50px] py-5 h-[calc(100%-70px)] overflow-y-scroll w-full flex flex-col items-center">
         { SERVICES.map(
           (service, index) => (
             <ServiceCard key={`${index}${service.name}`} service={service}/>

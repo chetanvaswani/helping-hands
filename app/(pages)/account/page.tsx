@@ -1,5 +1,8 @@
 import { BiSolidUser } from "react-icons/bi";
 import { MdOutlineSettings } from "react-icons/md";
+import { getServerSession } from "next-auth/next";
+import {authOptions} from "@/lib/auth";
+import RedirectToSignin from "@/components/RedirectToSignin";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = [
@@ -17,7 +20,16 @@ const MONTHS = [
     "December",
 ];
 
-export default function Account(){
+export default async function Account(){
+    const session = await getServerSession(authOptions)
+
+    if (!(session?.user.mobileNumber)){
+        return (
+            <div className="h-full w-full flex justify-center items-center bg-gray-100">       
+                <RedirectToSignin text="Please Sign-In using your mobile number to view your account details." />         
+            </div>
+        )
+    }
 
     return (
         <div className="overflow-y-scroll w-full flex flex-col justify-start gap-2 items-center">
