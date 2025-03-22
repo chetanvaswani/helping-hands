@@ -48,7 +48,7 @@ function Dashboard(){
     // Get the last date of the previous month
     const monthlastdate = new Date(year, month, 0).getDate();
 
-    const calander = [];
+    const calander : any = [];
 
     for (let i=(-(dayone - 1) ); i <= lastdate; i++){
         if (i < 0){

@@ -20,7 +20,9 @@ export default function SigninBox(){
 
     const clearAlertDiv = () => {
         setTimeout(() => {
-            {alerDivtRef.current ? alerDivtRef.current.innerText = "" : null}
+            if (alerDivtRef.current){
+                alerDivtRef.current.innerText = ""
+            }
         }, 1500)
     }
 
@@ -34,7 +36,7 @@ export default function SigninBox(){
         setBtnText("Sending Opt...")
         axios.post("/api/send-otp", {
             mobNum: mobNum
-        }).then((res) => {
+        }).then(() => {
             if (alerDivtRef.current){
                 alerDivtRef.current.innerText = "Otp sent successfully!"
                 clearAlertDiv();

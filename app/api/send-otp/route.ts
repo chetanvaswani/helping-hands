@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       status: "failure",
       data: {
         msg: "Some error occurred, please try again!",
-        error: err.message
+        error: err?.message
       }
     }, { status: 500 });
   }

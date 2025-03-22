@@ -3,11 +3,6 @@ import prisma from "@/db/index";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from 'next-auth/jwt';
 
-interface token extends JWT {
-  uid: string;
-  jwtToken: string;
-}
-
 export const authOptions = {
     providers: [
         CredentialsProvider({
@@ -16,7 +11,7 @@ export const authOptions = {
             mobNum: { label: "Mobile Number", type: "text" },
             otp: { label: "OTP", type: "text" },
           },
-          async authorize(credentials: any, req: any): Promise<any>  {
+          async authorize(credentials: any): Promise<any>  {
             const otpRecord = await prisma.otp.findFirst({
                 where: { mobNo: credentials.mobNum, isUsed: false },
                 orderBy: {
