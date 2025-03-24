@@ -14,7 +14,7 @@ import { IoLocationOutline } from "react-icons/io5";
 
 export default function AddAddress() {
   const router = useRouter()
-  const [curr, setCurr] = useState<[number, number]>([81.35455410217271, 21.217549208649288]); // Default center
+  const [curr, setCurr] = useState<[number, number]>([77.61648476788898, 12.931423492103944]);
   const [userLocation, setUserLocation] = useState(false);
   const [address, setAddress] = useState("Looking up your selected location...");
   const [searchInput, setSearchInput] = useState("");
@@ -56,7 +56,7 @@ export default function AddAddress() {
   }, [searchInput, curr])
 
   useEffect(() => {
-    setUserLocation(true)
+    // setUserLocation(true)
     SetCurrLocation()
   }, [])
 
@@ -225,7 +225,7 @@ export default function AddAddress() {
               }
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col shadow-md">
             <Button text="Add details to your Address" variant="dark" />
           </div>
       </div>

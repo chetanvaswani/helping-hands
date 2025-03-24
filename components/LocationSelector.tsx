@@ -20,15 +20,24 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
     // console.log("hello")
 
     function showPosition(position: GeolocationPosition) {
-      // console.log(process.env.NEXTAUTH_SECRET)
-      axios.get(`/api/get-address/?lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
-      .then((res) => {
-        // console.log(res.data)
-        setAddressName(res.data.data.results[0].formatted_address)
-      }).catch((err) => {
-        console.log(err)
-      })
+      const params = new URLSearchParams();
+      params.append("latlng", `${position.coords.latitude},${position.coords.longitude}`);
+      params.append("api_key", process.env.NEXT_PUBLIC_OLA_API_KEY || "");
+      const queryString = params.toString();
+      const url = `${process.env.NEXT_PUBLIC_REVERSE_GEOCODE_URL}?${queryString}`;
+      // console.log(url)
+      axios.get(url, {
+        // headers: {
+        //   "origin": process.env.NEXT_PUBLIC_OLA_REQ_ORIGIN
+        // }
+      }).then((res) => {
+        setAddressName(res.data.results[0].formatted_address)
+        // console.log(res)
+      }).catch(() => {
+        // console.log(err)
+        setAddressName("error while looking up your address")
       // console.log(position, "pos");
+      })
     }
     // showPosition()
   }, []);
