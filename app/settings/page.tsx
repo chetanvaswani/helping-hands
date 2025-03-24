@@ -36,7 +36,7 @@ function SettingsMain(){
                 <div className="absolute bottom-[20px] w-[90%] flex flex-col">
                     
                     <Button text="Logout" variant="dark" startIcon={<TbLogout2 className="size-5" />} onClick={() => {
-                        signOut();
+                        signOut({ redirect: true, callbackUrl: "/signin" });
                     }} />
                 </div> : false
             }
