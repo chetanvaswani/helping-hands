@@ -11,7 +11,7 @@ export default function Address(){
         <div className="h-screen overflow-hidden w-full bg-gray-100 flex flex-col items-center">
             <div className="h-[50px] flex items-center gap-2 w-[90%] m-2">
                 <div  className="flex gap-2 cursor-pointer" onClick={() => {
-                    router.push("/home")
+                    router.back()
                 }}>
                     <IoIosArrowDown className="size-4 stroke-1 mt-2" />
                     <h2 className="font-semibold text-xl">
@@ -20,7 +20,9 @@ export default function Address(){
                 </div>
             </div>
             <div className="w-[90%] flex flex-col">
-                <Button text="Add a new address" variant="light" startIcon={<MdAddLocationAlt className="size-7 stroke-0 -mt-1" />} />
+                <Button text="Add a new address" variant="light" startIcon={<MdAddLocationAlt className="size-7 stroke-0 -mt-1" />} onClick={() => {
+                    router.push('/address/add')
+                }} />
             </div>
             <div className="inline-flex items-center justify-center w-full">
                 <hr className="w-[80%] h-[2px] my-8 bg-gray-200 border-0 rounded-sm" />

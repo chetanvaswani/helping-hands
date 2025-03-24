@@ -91,7 +91,7 @@ export default function SigninBox(){
       };
 
     return (
-        <div className=" max-w-[550px] w-[90%] p-5 rounded-lg bg-white flex flex-col items-center gap-5">
+        <div className=" max-w-[550px] w-[90%] p-5 rounded-lg bg-white flex flex-col items-center gap-4">
             <div className=" w-full text-center m-2">
                 <h1 className="font-semibold text-xl">Enter your mobile number</h1>
             </div>
@@ -133,7 +133,7 @@ interface ResendCountdownProps{
 }
 
 
-function ResendCountdown({ initialTime = 45, onResend, disabled }: ResendCountdownProps){
+function ResendCountdown({ initialTime = 10, onResend, disabled }: ResendCountdownProps){
     const [timeLeft, setTimeLeft] = useState(initialTime);
 
     useEffect(() => {
@@ -157,8 +157,12 @@ function ResendCountdown({ initialTime = 45, onResend, disabled }: ResendCountdo
                 Please wait {timeLeft} second{timeLeft !== 1 && "s"} to resend OTP.
             </p>
             : 
-            <div className="flex flex-col w-full">
-                <Button text={"Resend Otp"} variant="dark" disabled={disabled} onClick={handleResend} /> 
+            <div className="flex flex-col w-full justify-center items-center">
+                <p className="text-black w-fit text-base -mt-1 font-semibold cursor-pointer " onClick={() => {
+                if (!disabled){
+                    handleResend()
+                }
+            }}>Resend OTP</p>
             </div>
          }
         </div>

@@ -19,12 +19,16 @@ export default function Checkout(){
     const [selectedDuration, setSelectedDuration] = useState<Duration['name']>("once")
 
     return (
-        <div className="w-full h-svh flex flex-col items-center bg-gray-100 ">
+        <div className="w-full h-svh flex flex-col items-center bg-gray-100 overflow-hidden ">
             <div className="w-full px-2 flex justify-center items-center bg-white" >
-                <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 border-b-2 border-gray-200" onClick={() => {
-                    router.push('/home')
-                }} />
-                <LocationSelector title={"Home"} subTitle={"Vaishali Nagar Bhilai"} />
+                <div className="pl-[25px] w-[20%]">
+                    <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 border-b-2 border-gray-200" onClick={() => {
+                        router.push('/home')
+                    }} />
+                </div>
+                <div className="w-full">
+                    <LocationSelector title={"Home"} subTitle={"Vaishali Nagar Bhilai"} />
+                </div>
             </div>
             <div className=" w-[90%] flex items-center flex-col gap-4 mt-5">
                 <BookingDurationSlider selectedDuration={selectedDuration} setSelectedDuration={setSelectedDuration} />
