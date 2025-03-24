@@ -127,14 +127,14 @@ export default function AddAddress() {
         // marker.setZIndexOffset(1000);
       });
 
-      // const geolocate = olaMaps.addGeolocateControls({
-      //   positionOptions: {
-      //     enableHighAccuracy: true,
-      //   },
-      //   trackUserLocation: true,
-      // })
+      const geolocate = olaMaps.addGeolocateControls({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      })
       
-      // myMap.addControl(geolocate)
+      myMap.addControl(geolocate)
       // console.log(curr)
       myMap.on("moveend", () => {
         const newCenter = myMap.getCenter(); // returns [lng, lat]
@@ -174,6 +174,7 @@ export default function AddAddress() {
                   setSearchPredictions([])
                   if (searchBarRef.current){
                     searchBarRef.current.value = "" 
+                    setSearchInput("")
                   }
                 }} /> : false
               }

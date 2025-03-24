@@ -40,3 +40,7 @@ body {
 .custom-marker {
   @apply z-[1000]; /* Tailwind's z-index utility */
 }
+
+.maplibregl-ctrl-group{
+  @apply relative top-[70px];
+}
