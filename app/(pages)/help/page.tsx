@@ -8,7 +8,7 @@ export default function Help() {
 
   return (
     <div className="w-full flex-col h-full flex overflow-hidden ">
-      <div className="fixed bg-white top-0 left-0 h-[60px] z-100 w-full mx-2 text-2xl font-bold border-b-2 border-black">
+      <div className="fixed bg-white top-0 left-0 h-[60px] z-100 w-full px-2 text-2xl font-bold border-b-2 border-black">
         <p className="p-4">
             FAQ&#39;s
         </p>

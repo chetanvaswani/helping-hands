@@ -15,6 +15,15 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
   const [addressName, setAddressName] = useState("Looking up your address...");
 
   useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === "prompt") {
+        setAddressName("Location Premission Denied")
+        console.log("prompt")
+      } else if (result.state === "denied") {
+        setAddressName("Location Premission denied")
+        console.log("denied")
+      }
+    });
     // console.log(navigator.geolocation)
     navigator.geolocation.getCurrentPosition(showPosition);
     // console.log("hello")

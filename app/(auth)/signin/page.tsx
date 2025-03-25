@@ -1,7 +1,15 @@
 import Image from "next/image";
 import SigninBox from "@/components/SigninBox";
+import { getServerSession } from "next-auth/next";
+import {authOptions} from "@/lib/auth";
+import { redirect } from 'next/navigation'
 
-export default function Signin({}){
+export default async function Signin({}){
+    const session = await getServerSession(authOptions)
+
+    if (session?.user.mobileNumber){
+        redirect('/home')
+    }
 
     return (
         <div className="h-svh overflow-hidden gap-[10px] justify-start bg-gray-100 w-full items-center flex flex-col">

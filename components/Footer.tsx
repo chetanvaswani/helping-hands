@@ -6,7 +6,10 @@ import { VscAccount } from "react-icons/vsc";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
+import { MdOutlineDashboard } from "react-icons/md";
+import { MdDashboard } from "react-icons/md";
+import { useSession, SessionProvider } from "next-auth/react";
 
 export default function Footer(){
   const pathname = usePathname()
@@ -14,9 +17,12 @@ export default function Footer(){
 
   return (
     <div className="overflow-hidden fixed bottom-0 left-0 w-full bg-black flex justify-evenly items-center z-10 h-[60px]">
-        <FooterButton name="home" Active={HiHome} InActive={SlHome} currPage={currPage} setCurrPage={setCurrPage} />
-        <FooterButton name="help" Active={IoMdHelpCircle} InActive={IoMdHelpCircleOutline} currPage={currPage} setCurrPage={setCurrPage} />
-        <FooterButton name="account" Active={RiAccountCircleFill} InActive={VscAccount} currPage={currPage} setCurrPage={setCurrPage} />
+        <SessionProvider>
+          <FooterButton name="home" Active={HiHome} InActive={SlHome} currPage={currPage} setCurrPage={setCurrPage} />
+          <FooterButton name="dashboard" Active={MdDashboard} InActive={MdOutlineDashboard} currPage={currPage} setCurrPage={setCurrPage} />
+          <FooterButton name="help" Active={IoMdHelpCircle} InActive={IoMdHelpCircleOutline} currPage={currPage} setCurrPage={setCurrPage} />
+          <FooterButton name="account" Active={RiAccountCircleFill} InActive={VscAccount} currPage={currPage} setCurrPage={setCurrPage} />
+        </SessionProvider>
     </div>
   );
 }
@@ -24,16 +30,20 @@ export default function Footer(){
 interface FooterButtonProps {
   Active: React.ElementType,
   InActive: React.ElementType,
-  name: "home" | "help" | "account",
+  name: "home" | "help" | "account"| "dashboard",
   currPage: string,
-  setCurrPage: (str: "home" | "help" | "account") => void,
+  setCurrPage: (str: "home" | "help" | "account" | "dashboard") => void,
 }
 
 function FooterButton({ Active, InActive, name, currPage, setCurrPage }: FooterButtonProps) {
-  const router = useRouter()
+  const router = useRouter();
+  const session = useSession();
+  if ((session.status === "unauthenticated" || session.status == "loading") && name === "dashboard"){
+    return
+  }
   return (
     <div
-      className="flex flex-col items-center w-[33%] text-white text-sm cursor-pointer"
+      className="flex flex-col w-[33%] items-center text-white text-sm cursor-pointer"
       onClick={() => {
         setCurrPage(name)
         router.push(`/${name}`)
