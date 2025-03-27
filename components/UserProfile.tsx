@@ -2,8 +2,9 @@
 import { BiSolidUser } from "react-icons/bi";
 import { MdOutlineSettings } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { toTitleCase } from "@/utils/toTitleCase";
 
-export default function UserProfile({mobileNumber, name=null}){
+export default function UserProfile({mobileNumber, name}){
     const router = useRouter()
     return (
         <div className=" m-5 mb-3 h-[100px] w-[90%] bg-white shadow-md flex rounded-4xl border-1 border-dashed border-black">
@@ -13,9 +14,9 @@ export default function UserProfile({mobileNumber, name=null}){
             <div className="w-[75%] ml-1 h-full flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start" >
                     {
-                        name ? 
+                        name && name.toLowerCase() !== "user" ? 
                         <div>
-                            <div className="font-semibold !no-underline text-xl -m-1">{name}</div>
+                            <div className="font-semibold !no-underline text-xl -m-1">{toTitleCase(name)}</div>
                             <div className="font-base !no-underline text-sm">+91 {mobileNumber}</div>
                         </div>
                         :

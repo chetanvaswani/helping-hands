@@ -9,20 +9,24 @@ import { useState } from "react";
 import { usePathname } from 'next/navigation';
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdDashboard } from "react-icons/md";
-import { useSession, SessionProvider } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { toTitleCase } from "@/utils/toTitleCase"
 
 export default function Footer(){
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const session = useSession();
   const [currPage, setCurrPage] = useState(pathname.replace("/", ''))
 
   return (
     <div className="overflow-hidden fixed bottom-0 left-0 w-full bg-black flex justify-evenly items-center z-10 h-[60px]">
-        <SessionProvider>
           <FooterButton name="home" Active={HiHome} InActive={SlHome} currPage={currPage} setCurrPage={setCurrPage} />
-          <FooterButton name="dashboard" Active={MdDashboard} InActive={MdOutlineDashboard} currPage={currPage} setCurrPage={setCurrPage} />
+          {
+            session.status === "authenticated"
+              ? <FooterButton name="dashboard" Active={MdDashboard} InActive={MdOutlineDashboard} currPage={currPage} setCurrPage={setCurrPage} />
+              : false
+          }
           <FooterButton name="help" Active={IoMdHelpCircle} InActive={IoMdHelpCircleOutline} currPage={currPage} setCurrPage={setCurrPage} />
           <FooterButton name="account" Active={RiAccountCircleFill} InActive={VscAccount} currPage={currPage} setCurrPage={setCurrPage} />
-        </SessionProvider>
     </div>
   );
 }
@@ -37,10 +41,6 @@ interface FooterButtonProps {
 
 function FooterButton({ Active, InActive, name, currPage, setCurrPage }: FooterButtonProps) {
   const router = useRouter();
-  const session = useSession();
-  if ((session.status === "unauthenticated" || session.status == "loading") && name === "dashboard"){
-    return
-  }
   return (
     <div
       className="flex flex-col w-[33%] items-center text-white text-sm cursor-pointer"
@@ -56,8 +56,4 @@ function FooterButton({ Active, InActive, name, currPage, setCurrPage }: FooterB
       <div>{toTitleCase(name)}</div>
     </div>
   );
-}
-
-export function toTitleCase(str: string) {
-  return str.replace("_", " ").replace(/(?:^|\s)\w/g, (match) => match.toUpperCase());
 }

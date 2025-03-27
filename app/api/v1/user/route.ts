@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/db/index";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { UserSchema } from "@/schemas/UserSchema"
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const { searchParams } = req.nextUrl;
-    const mobileNumber = searchParams.get("mobileNumber");
+    const mobileNumber = session?.user.mobileNumber;
     const includeParam = searchParams.get("include");
 
     if (!mobileNumber) {
@@ -39,7 +43,7 @@ export async function GET(req: NextRequest) {
       }, {} as Record<string, boolean>);
       queryOptions.include = includes;
     } else {
-      queryOptions.select = { id: true, name: true, mobileNumber: true, email: true };
+      queryOptions.select = { id: true, name: true, mobileNumber: true, email: true, referralCode: true };
     }
 
     const user = await prisma.user.findUnique(queryOptions);
@@ -54,6 +58,67 @@ export async function GET(req: NextRequest) {
 
   } catch (err: any) {
     console.error("GET /api/user error:", err);
+    return NextResponse.json(
+      {
+        status: "failure",
+        data: { msg: "Internal Server Error", error: err.message },
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.mobileNumber) {
+      return NextResponse.json(
+        { status: "failure", data: { msg: "No user session found" } },
+        { status: 401 }
+      );
+    }
+
+    const rawData = await req.json();
+    // console.log(rawData)
+    const parseResult = UserSchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      return NextResponse.json(
+        {
+          status: "failure",
+          data: { msg: "Validation Error", error: parseResult.error.errors },
+        },
+        { status: 400 }
+      );
+    }
+
+    const { mobileNumber, ...restData } = parseResult.data;
+
+    if (mobileNumber !== session.user.mobileNumber) {
+      return NextResponse.json(
+        {
+          status: "failure",
+          data: { msg: "You are not authorised to peform this operation." },
+        },
+        { status: 403 }
+      );
+    }
+
+    const updateData: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(restData)) {
+      if (value !== undefined) {
+        updateData[key] = value;
+      }
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { mobileNumber },
+      data: updateData,
+    });
+
+    return NextResponse.json({ status: "success", data: updatedUser });
+  } catch (err: any) {
+    console.error("PUT /api/v1/user error:", err);
     return NextResponse.json(
       {
         status: "failure",
