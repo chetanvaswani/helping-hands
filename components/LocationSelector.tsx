@@ -47,6 +47,8 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
         setAddressName("error while looking up your address")
       // console.log(position, "pos");
       })
+
+      
     }
     // showPosition()
   }, []);
@@ -58,7 +60,7 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
         }}>
           <div className="flex items-end">{title}</div>
           <div className="text-sm text-black/60 flex items-end gap-1">
-            <p className=" whitespace-nowrap line-clamp-1 overflow-hidden">
+            <p className="whitespace-nowrap line-clamp-1 overflow-hidden">
               {addressName}
             </p>
             <IoIosArrowDown className="mb-[2px]" />

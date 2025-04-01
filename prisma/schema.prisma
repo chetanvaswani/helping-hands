@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AddressType {
+  home
+  work
+  other
+}
+
 model Service {
   id             Int             @id @default(autoincrement())
   name           String
@@ -85,21 +91,21 @@ model Otp {
   ipAddress  String?
 }
 
-
 model Address {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
   userId    Int
-  latitude  Decimal  @db.Decimal(10,7)
-  longitude Decimal  @db.Decimal(10,7)
+  latitude  Decimal     @db.Decimal(10,7)
+  longitude Decimal     @db.Decimal(10,7)
   name      String
   address   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
+  type      AddressType 
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
 
   bookings  Booking[]
 }
+
 
 model Admin {
   id           Int      @id @default(autoincrement())
@@ -267,4 +273,3 @@ model VisitorLocationLog {
   longitude  Decimal  @db.Decimal(10,7)
   createdAt  DateTime @default(now())
 }
-

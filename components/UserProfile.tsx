@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toTitleCase } from "@/utils/toTitleCase";
 
 export default function UserProfile({mobileNumber, name}){
-    const router = useRouter()
+    const router = useRouter();
     return (
         <div className=" m-5 mb-3 h-[100px] w-[90%] bg-white shadow-md flex rounded-4xl border-1 border-dashed border-black">
             <div className=" ml-2 w-[25%] h-full flex justify-center items-center">

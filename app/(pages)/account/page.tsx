@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import UserProfile from "@/components/UserProfile";
 import { getServerSession } from "next-auth/next";
 import {authOptions} from "@/lib/auth";
@@ -28,6 +30,8 @@ export default async function Account(){
         email: userResponse.data.data.email,
         referralCode: userResponse.data.data.referralCode
     }
+
+    console.log(user)
 
     return (
         <div className="overflow-y-scroll w-full h-full flex flex-col justify-start gap-2 items-center">
