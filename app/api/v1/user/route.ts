@@ -3,6 +3,7 @@ import prisma from "@/db/index";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { UserSchema } from "@/schemas/UserSchema"
+import {revalidateUserCache } from "@/lib/actions/revalidateUser";
 
 export async function GET(req: NextRequest) {
   try {
@@ -115,6 +116,8 @@ export async function PUT(req: NextRequest) {
       where: { mobileNumber },
       data: updateData,
     });
+
+    revalidateUserCache(`user-${updatedUser.mobileNumber}`);
 
     return NextResponse.json({ status: "success", data: updatedUser });
   } catch (err: any) {

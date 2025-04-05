@@ -17,10 +17,6 @@ export default function SettingsForm({UserProp}){
     const session = useSession();
     const [user, setUser] = useState(UserProp)
 
-    useEffect(() => {
-        console.log(user)
-    })
-
     return (
         <>
         <div className="w-full p-2 flex items-center gap-3 border-b-1 border-gray-600 pb-3 ">
