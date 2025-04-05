@@ -19,11 +19,12 @@ export default async function Account(){
     const url = `${process.env.NEXTAUTH_URL}/api/v1/user`;
     const response = await fetch(url, {
         headers: { cookie },
+        cache: "no-store",
         next: { revalidate: 0, tags: [`user-${session.user.mobileNumber}`] },
     })
     const data = await response.json();
     const user: User = data.data;
-    
+
     return (
         <div className="overflow-y-scroll w-full h-full flex flex-col justify-start gap-2 items-center">
             <UserProfile mobileNumber={user.mobileNumber} name={(user.name).toLowerCase() !== "user" ? user.name : null} />
