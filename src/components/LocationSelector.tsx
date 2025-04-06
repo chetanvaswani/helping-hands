@@ -16,7 +16,7 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
   const router = useRouter();
   const [addressName, setAddressName] = useState("Looking up your address...");
   const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
-  console.log(currentAddressState)
+  console.log(currentAddressState, setCurrentAddressState)
 
   useEffect(() => {
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {

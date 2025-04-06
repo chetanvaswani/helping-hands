@@ -22,8 +22,8 @@ export default function AddAddress() {
   const [searchPredictions, setSearchPredictions] = useState([]);
   const searchBarRef: any = useRef(null);
   // const [mapInstance, setMapInstance] = useState<any>(null);
-  let searchInputTimeout;
-  const timeout = useRef<ReturnType<typeof setTimeout>>(null)
+  let searchInputTimeout: string | number | NodeJS.Timeout | undefined;
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function SetCurrLocation(){
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {

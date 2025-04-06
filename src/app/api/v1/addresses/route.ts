@@ -19,7 +19,7 @@ export async function GET() {
         }
 
         const addresses = await prisma.address.findMany({
-            where: { user: { mobileNumber: session.user.mobileNumber } },
+            where: { User: { mobileNumber: session.user.mobileNumber } },
         });
 
         return NextResponse.json({ status: "success", data: { addresses } });
