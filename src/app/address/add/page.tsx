@@ -49,20 +49,20 @@ export default function AddAddress() {
 
   useEffect(() => {
     if (detailsFormOpen && mapRef.current){
-      console.log("hello")
+      // console.log("hello")
       mapRef.current.dragPan.disable();
       mapRef.current.scrollZoom.disable();
       mapRef.current.doubleClickZoom.disable();
       mapRef.current.keyboard.disable();
       mapRef.current.touchZoomRotate.disable();
-      mapRef.current.removeControl(geolocateRef.current);
+      // mapRef.current.removeControl(geolocateRef.current);
     } else if (mapRef.current){
       mapRef.current.dragPan.enable();
       mapRef.current.scrollZoom.enable();
       mapRef.current.doubleClickZoom.enable();
       mapRef.current.keyboard.enable();
       mapRef.current.touchZoomRotate.enable();
-      mapRef.current.addControl(geolocateRef.current);
+      // mapRef.current.addControl(geolocateRef.current);
     }
   }, [detailsFormOpen])
 

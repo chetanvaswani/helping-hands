@@ -17,7 +17,7 @@ export default function Address() {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "tween", duration: 0.3 }}
-        className="h-screen overflow-hidden w-full bg-gray-100 flex flex-col items-center"
+        className="h-svh overflow-hidden w-full bg-gray-100 flex flex-col items-center"
       >
         <div className="h-[50px] flex items-center gap-2 w-[90%] m-2">
           <div
