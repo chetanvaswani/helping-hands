@@ -3,6 +3,7 @@ function toRadians(degrees: number): number {
 }
 
 // takes in an array of latitude and longitude in this partifular order
+// returns the distance between two places in meters.
 export function haversineDistance(
     coord1: [number, number],
     coord2: [number, number]

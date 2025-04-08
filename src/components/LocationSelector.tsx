@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
+import { haversineDistance } from "@/utils/findDistance";
 
 interface LocationSelectorInterface{
     title: string,
@@ -16,7 +17,6 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
   const router = useRouter();
   const [addressName, setAddressName] = useState("Looking up your address...");
   const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
-  console.log(currentAddressState, setCurrentAddressState)
 
   useEffect(() => {
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {
@@ -33,6 +33,17 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
     // console.log("hello")
 
     function showPosition(position: GeolocationPosition) {
+      if (currentAddressState){
+        const distance = haversineDistance([position.coords.latitude, position.coords.longitude], [Number(currentAddressState.latitude), Number(currentAddressState.longitude)])
+        if (distance < 10){
+          // console.log(distance)
+          setAddressName(currentAddressState.address)
+          return
+        }
+      }
+
+      // console.log("search starting")
+
       const params = new URLSearchParams();
       params.append("latlng", `${position.coords.latitude},${position.coords.longitude}`);
       params.append("api_key", process.env.NEXT_PUBLIC_OLA_API_KEY || "");
@@ -44,6 +55,11 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
         //   "origin": process.env.NEXT_PUBLIC_OLA_REQ_ORIGIN
         // }
       }).then((res) => {
+        setCurrentAddressState({
+          latitude: position.coords.latitude.toString(),
+          longitude: position.coords.longitude.toString(),
+          address: res.data.results[0].formatted_address
+        })
         setAddressName(res.data.results[0].formatted_address)
         // console.log(res)
       }).catch(() => {
@@ -54,11 +70,10 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
 
       
     }
-    // showPosition()
   }, []);
 
   return (
-    <div className=" h-[70px] z-100 w-full top-0 flex justify-between items-center px-2 py-5 text-black font-bold text-xl border-b-2 border-black/10 bg-white">
+    <div className="z-[1000] h-[70px] w-full top-0 flex justify-between items-center px-2 py-5 text-black font-bold text-xl border-b-2 border-black/10 bg-white">
         <div className="ml-2 w-[80%]" onClick={() => {
           router.push("/address")
         }}>

@@ -13,6 +13,7 @@ export interface servicesInterface{
   
 const SERVICES : servicesInterface[] = [ 
     { name: "House Help", img: "/maid.png", active: true },
+    { name: "AC Service", img: "/ac-service.png", active: true },
     { name: "Driver", img: "/driver.png", active: true },
     { name: "Cook", img: "/cook.png", active: false },
 ]

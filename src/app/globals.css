@@ -38,9 +38,9 @@ body {
 }
 
 .custom-marker {
-  @apply z-[1000]; /* Tailwind's z-index utility */
+  @apply z-[500]; /* Tailwind's z-index utility */
 }
 
-.maplibregl-ctrl-group{
+.maplibregl-ctrl{
   @apply relative top-[70px];
 }

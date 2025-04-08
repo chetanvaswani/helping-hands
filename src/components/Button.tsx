@@ -4,7 +4,7 @@ import { ReactElement } from "react"
 interface ButtonProps {
     variant: "light" | "dark",
     text: string,
-    startIcon?: ReactElement,
+    startIcon?: ReactElement | null,
     endIcon?: ReactElement,
     onClick? : () => void,
     type?: "submit" | "button",
