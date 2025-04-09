@@ -93,7 +93,13 @@ export default function AddressDisplay(){
                     <div className="flex w-full gap-5 py-5">
                         <div className="w-[50%] flex flex-col">
                             <Button text="Allow" variant="dark" onClick={() => {
-                              navigator.geolocation.getCurrentPosition(showPosition);
+                              navigator.geolocation.getCurrentPosition(
+                                showPosition,
+                                (error) => {
+                                  console.error("Error in getCurrentPosition", error);
+                                  setAddressName(`Error: ${error.message}`);
+                                }
+                              );
                               setGetPermissionModal(false)
                             }}/>
                         </div>
