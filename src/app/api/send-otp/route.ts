@@ -24,8 +24,13 @@ export async function POST(req: NextRequest) {
         mobNo: mobNum,
         otp: otp.toString(),
         reference: "",
+      },
+      select: {
+        createdAt: true,
+        otp: true,
+        reference: true
       }
-    });
+    })
     console.log(otpEntry);
 
     return NextResponse.json({

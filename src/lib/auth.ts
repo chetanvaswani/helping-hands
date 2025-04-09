@@ -17,6 +17,11 @@ export const authOptions = {
                 orderBy: {
                   createdAt: "desc",
                 },
+                select: {
+                  id: true,
+                  expiry: true,
+                  otp: true
+                }
             });
 
             if (!otpRecord) {
@@ -31,6 +36,10 @@ export const authOptions = {
             await prisma.otp.update({
                 where: { id: otpRecord.id },
                 data: { isUsed: true },
+                select: {
+                  id: true,
+                  isUsed: true,
+                }
             });
 
             let user = await prisma.user.findUnique({

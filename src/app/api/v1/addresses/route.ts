@@ -3,17 +3,10 @@ import { getServerSession } from "next-auth/next";
 import prisma from "@/db/index";
 import { authOptions } from "@/lib/auth";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    let mobileNumber: string | null = session?.user?.mobileNumber || null;
-    console.log("from session", mobileNumber)
-
-    if (!mobileNumber) {
-      mobileNumber = req.headers.get("mobileNumber");
-    }
-
-    console.log("from headers", mobileNumber)
+    const mobileNumber: string | null = session?.user?.mobileNumber || null;
 
     if (!mobileNumber) {
       return NextResponse.json(

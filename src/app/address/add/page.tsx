@@ -62,7 +62,7 @@ export default function AddAddress() {
       mapRef.current.doubleClickZoom.enable();
       mapRef.current.keyboard.enable();
       mapRef.current.touchZoomRotate.enable();
-      // mapRef.current.addControl(geolocateRef.current);
+      mapRef.current.addControl(geolocateRef.current);
     }
   }, [detailsFormOpen])
 

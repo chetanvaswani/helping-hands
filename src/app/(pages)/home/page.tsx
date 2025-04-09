@@ -24,7 +24,7 @@ export default async function Home() {
   console.log(session?.user.mobileNumber)
   return (
     <div className="w-full flex-col h-full flex overflow-hidden">
-      <div className="fixed top-0 w-full z-10">
+      <div className="fixed top-0 w-full z-10 border-b-2 border-gray-200">
         <LocationSelector title={"Welcome"} subTitle={"Vaishali Nagar Bhilai"} Icon={<TbCurrentLocation className="mr-5 w-8 h-8" />} />
       </div>
       <div className=" relative top-[50px] py-5 h-[calc(100%-70px)] overflow-y-scroll w-full flex flex-col items-center">

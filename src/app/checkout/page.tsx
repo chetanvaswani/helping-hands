@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { CiDiscount1 } from "react-icons/ci";
 import { HiArrowLongLeft } from "react-icons/hi2";
@@ -20,9 +20,9 @@ export default function Checkout(){
 
     return (
         <div className="w-full h-svh flex flex-col items-center bg-gray-100 overflow-hidden ">
-            <div className="w-full px-2 flex justify-center items-center bg-white" >
-                <div className="pl-[25px] w-[20%]">
-                    <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 border-b-2 border-gray-200" onClick={() => {
+            <div className="w-full px-2 flex justify-center items-center bg-white border-b-2 border-gray-200" >
+                <div className="h-full">
+                    <HiArrowLongLeft className="h-[70px] cursor-pointer size-9 pl-2 " onClick={() => {
                         router.push('/home')
                     }} />
                 </div>

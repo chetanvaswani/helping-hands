@@ -17,7 +17,7 @@ export default function Modal({
 
     if (open){
         return (
-            <div id="modal-background" className="h-full w-full z-200 bg-opacity-0 bg-black-50 absolute top-0 left-0 flex justify-center items-center" onClick={(event) => {
+            <div id="modal-background" className="h-svh w-screen z-200 bg-opacity-0 bg-[rgba(0,0,0,0.5)] absolute top-0 left-0 flex justify-center items-center" onClick={(event) => {
                 if(event.target == document.getElementById('modal-background')){
                     setOpen(false)
                 }

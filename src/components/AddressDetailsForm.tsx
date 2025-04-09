@@ -75,10 +75,14 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
               headers: { "Content-Type": "application/json" },
             }).then((res) => {
                 console.log(res)
-                setSavedAddresses([
-                  ...savedAddresses,
-                  res.data.data
-                ])
+                if (savedAddresses !==  null){
+                  setSavedAddresses([
+                    ...savedAddresses,
+                    res.data.data
+                  ]as any)
+                } else {
+                  setSavedAddresses([ res.data.data ] as any)
+                }
                 setTimeout(() => {
                   router.back()
                 }, 500)
@@ -107,8 +111,8 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="h-[65%] fixed bottom-0 bg-gray-100 left-[1%] rounded-lg z-100 overflow-hidden w-[98%] flex flex-col items-center cursor-pointer">
-        <div className="h-[50px] px-3 flex items-center gap-2 justify-start w-full z-100 " onClick={() => {
+      className="h-[65%] fixed bottom-0 bg-gray-100 left-[1%] gap-5 rounded-lg z-100 overflow-hidden w-[98%] flex flex-col items-center cursor-pointer">
+        <div className="h-[50px] px-3 flex items-center border-b-1 border-gray-200 shadow-sm bg-white gap-2 justify-start w-full z-100 " onClick={() => {
               setDetailsFormOpen(false)
             }}>
             <h1 className="font-bold text-xl">Add Address Details</h1>
@@ -121,8 +125,8 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
         </div>
         {
           type === "other" ? 
-          <div className="w-[95%] flex gap-3 mt-5">
-            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg border-2 border-gray-200 rounded-lg p-2 " placeholder="Save address as" onChange={(e) => {
+          <div className="w-[95%] flex gap-3">
+            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " placeholder="Save address as" onChange={(e) => {
                 setAddressDetails({
                     ...addressDetails,
                     name: e.target.value
@@ -130,21 +134,21 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
             }} />
           </div> : false
         }
-        <div className="w-[95%] flex gap-3 mt-5">
-            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg border-2 border-gray-200 rounded-lg p-2 " placeholder="Enter complete address" onChange={(e) => {
+        <div className="w-[95%] flex gap-3">
+            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " placeholder="Enter complete address" onChange={(e) => {
                 setAddressDetails({
                     ...addressDetails,
                     address: e.target.value
                 })
             }} />
         </div>
-        <div className="w-[95%] flex gap-3 mt-5">
-            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg border-2 border-gray-200 rounded-lg p-2 " placeholder="Floor/Landmark (optional)" onChange={(e) => {
+        <div className="w-[95%] flex gap-3">
+            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " placeholder="Floor/Landmark (optional)" onChange={(e) => {
                 setLandmark(e.target.value)
             }} />
         </div>
-        <div className="text-center w-[90%] text-gray-400 text-sm font-semibold mt-5" ref={alerDivtRef}></div>
-        <div className="flex flex-col shadow-md w-[95%] mt-7">
+        <div className="text-center w-[90%] text-gray-400 text-sm font-semibold" ref={alerDivtRef}></div>
+        <div className="flex flex-col shadow-md w-[95%]">
           <Button text={btnText} variant="dark" startIcon={loading ? <Loader /> : null} disabled={loading} onClick={() =>{
             submitAddress()
           }} />
