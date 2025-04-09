@@ -17,10 +17,10 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
   return (
     <>
     <div className="z-[1000] h-[70px] w-full top-0 flex justify-between items-center px-2 py-5 text-black font-bold text-xl bg-white">
-        <div className="ml-2 w-[80%]" onClick={() => {
-          router.push("/address")
-        }}>
-          <div className="flex items-center gap-1">
+        <div className="ml-2 w-[80%]">
+          <div className="flex items-center gap-1" onClick={() => {
+              router.push("/address")
+          }}>
             <div className="flex items-end">{title}</div>
             <IoIosArrowDown className="mt-1 size-4" />
           </div>

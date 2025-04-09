@@ -22,7 +22,6 @@ export default function Address() {
     if (savedAddresses === null){
       axios.get("/api/v1/addresses").then((res) => {
         if (res.data.data.addresses.length > 0){
-          console.log("console reached line 25")
           setSavedAddresses(res.data.data.addresses)
         } else {
           setSavedAddresses([] as any)
@@ -34,9 +33,7 @@ export default function Address() {
   }, [savedAddresses])
 
   useEffect(() => {
-    console.log("console reached line 37")
     if (!savedAddresses) return;
-     console.log(setSavedAddresses)
   
     const updatedAddresses = savedAddresses.map((address) => {
       const distanceInMeters = haversineDistance(
@@ -52,7 +49,6 @@ export default function Address() {
     const sortedAddresses = updatedAddresses.sort((a, b) => a.currDistance - b.currDistance);
   
     setSavedAddressesSorted(sortedAddresses);
-    console.log("console reached line 55")
   }, [savedAddresses, currentAddress]);
 
 

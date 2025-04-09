@@ -13,16 +13,45 @@ export default function AddressDisplay(){
     const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
     const [addresses, setAddresses] = useRecoilState(addressesAtom);
     const [getPermissionModal, setGetPermissionModal] = useState(false);
-    console.log(currentAddressState, addresses)
+    // console.log(currentAddressState, addresses)
   
     function isIOSSafari() {
       const ua = navigator.userAgent;
-      console.log(ua)
+      // console.log(ua)
       const isIOS = /iPhone|iPad|iPod/.test(ua);
       const isSafari = /^((?!CriOS).)*Safari/.test(ua);
       return isIOS && isSafari;
     }
   
+    const showPosition = useCallback((position: GeolocationPosition) => {
+      if (!currentAddressState){
+        const params = new URLSearchParams();
+          params.append("latlng", `${position.coords.latitude},${position.coords.longitude}`);
+          params.append("api_key", process.env.NEXT_PUBLIC_OLA_API_KEY || "");
+          const queryString = params.toString();
+          const url = `${process.env.NEXT_PUBLIC_REVERSE_GEOCODE_URL}?${queryString}`;
+          axios.get(url, {
+            }).then((res) => {
+              setCurrentAddressState({
+                latitude: position.coords.latitude.toString(),
+                longitude: position.coords.longitude.toString(),
+                address: res.data.results[0].formatted_address
+              })
+              // console.log("new curr address set")
+              setAddressName(res.data.results[0].formatted_address)
+            }).catch(() => {
+              // console.log(err)
+              setAddressName("error while looking up your address")
+            // console.log(position, "pos");
+            }) 
+      } else {
+        const distance = haversineDistance([position.coords.latitude, position.coords.longitude], [Number(currentAddressState.latitude), Number(currentAddressState.longitude)])
+        if (distance < 10){
+            setAddressName(currentAddressState.address)
+        }
+      }
+    }, [currentAddressState])
+
     useEffect(() => {
       if (addresses === null){
         axios.get("/api/v1/addresses").then((res) => {
@@ -39,54 +68,22 @@ export default function AddressDisplay(){
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         if (result.state === "prompt") {
           setAddressName("Location Premission Denied")
-          console.log("prompt")
+          // console.log("prompt")
         } else if (result.state === "denied") {
           setAddressName("Location Premission denied")
-          console.log("denied")
+          // console.log("denied")
         }
       });
       const usingSafari = isIOSSafari()
       // console.log(navigator.geolocation)
-      if (usingSafari){
+      // console.log("curr address is", currentAddressState)
+      if (usingSafari && currentAddressState === null){
         setGetPermissionModal(true)
       } else {
         navigator.geolocation.getCurrentPosition(showPosition);
       }
       // console.log("hello")
-    }, []);
-  
-    const showPosition = useCallback((position: GeolocationPosition) => {
-      if (!currentAddressState){
-        const params = new URLSearchParams();
-          params.append("latlng", `${position.coords.latitude},${position.coords.longitude}`);
-          params.append("api_key", process.env.NEXT_PUBLIC_OLA_API_KEY || "");
-          const queryString = params.toString();
-          const url = `${process.env.NEXT_PUBLIC_REVERSE_GEOCODE_URL}?${queryString}`;
-          // console.log(url)
-          axios.get(url, {
-            // headers: {
-            //   "origin": process.env.NEXT_PUBLIC_OLA_REQ_ORIGIN
-            // }
-          }).then((res) => {
-            setCurrentAddressState({
-              latitude: position.coords.latitude.toString(),
-              longitude: position.coords.longitude.toString(),
-              address: res.data.results[0].formatted_address
-            })
-            setAddressName(res.data.results[0].formatted_address)
-            // console.log(res)
-          }).catch(() => {
-            // console.log(err)
-            setAddressName("error while looking up your address")
-          // console.log(position, "pos");
-          }) 
-      } else {
-        const distance = haversineDistance([position.coords.latitude, position.coords.longitude], [Number(currentAddressState.latitude), Number(currentAddressState.longitude)])
-        if (distance < 10){
-            setAddressName(currentAddressState.address)
-        }
-      }
-    }, [currentAddressState])
+    }, [showPosition, currentAddressState]);
 
     return (
         <div>
@@ -96,7 +93,8 @@ export default function AddressDisplay(){
                     <div className="flex w-full gap-5 py-5">
                         <div className="w-[50%] flex flex-col">
                             <Button text="Allow" variant="dark" onClick={() => {
-
+                              navigator.geolocation.getCurrentPosition(showPosition);
+                              setGetPermissionModal(false)
                             }}/>
                         </div>
                         <div className="w-[50%] flex flex-col border-1 border-gray-100 rounded-lg">
