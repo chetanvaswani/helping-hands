@@ -7,7 +7,9 @@ import { toTitleCase } from "@/utils/toTitleCase";
 export default function UserProfile({mobileNumber, name}){
     const router = useRouter();
     return (
-        <div className=" m-5 mb-3 h-[100px] w-[90%] bg-white shadow-md flex rounded-4xl border-1 border-dashed border-black">
+        <div className=" m-5 mb-3 h-[100px] w-[90%] bg-white shadow-md flex rounded-4xl border-1 border-dashed border-black" onClick={() =>{
+            router.push('/settings')
+        }}>
             <div className=" ml-2 w-[25%] h-full flex justify-center items-center">
                 <BiSolidUser className="size-13 border-2 border-black rounded-[50%] p-2" />
             </div>
@@ -26,9 +28,7 @@ export default function UserProfile({mobileNumber, name}){
                         </div>
                     }
                 </div>
-                <MdOutlineSettings onClick={() =>{
-                    router.push('/settings')
-                }} className="size-9 text-black mr-6 cursor-pointer" />
+                <MdOutlineSettings className="size-9 text-black mr-6 cursor-pointer" />
             </div>
         </div>
     )

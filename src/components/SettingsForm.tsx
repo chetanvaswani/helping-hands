@@ -8,8 +8,9 @@ import axios from "axios";
 import { useEffect, useState,useRef, Dispatch } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { GiConfirmed } from "react-icons/gi";
+import { SiTicktick } from "react-icons/si";
 import Loader from "./RingLoader";
+import { toTitleCase } from "@/utils/toTitleCase";
 
 
 export default function SettingsForm({UserProp}){
@@ -133,21 +134,26 @@ function Field({name, value, absenceString, setUser, user} : fieldProps){
     return (
         <div className="w-full flex flex-col items-center">
             <div className="w-[90%] font-semibold px-1 text-lg">
-                {name}:
+                {toTitleCase(name)}:
             </div>
             <div className="w-[90%] justify-between gap-[5px] px-3 font-semibold rounded-md bg-white h-[50px] items-center flex">
                 <div className=" w-full">
                     {
                         inputActive ? <input className="w-full outline-0" placeholder={`Please enter your ${name}`} ref={inputRef} type="text"  /> : 
-                        value ? <div ref={valueDivRef}> {value} </div> : <div ref={valueDivRef} className="text-gray-500">{absenceString}</div>
+                        value ? <div ref={valueDivRef} onClick={() => {
+                            setInputActive(true)
+                        }}> {toTitleCase(value)} </div>
+                        : <div ref={valueDivRef} className="text-gray-500 bg-black" onClick={() => {
+                            setInputActive(true)
+                        }}>{absenceString}</div>
                     }
                 </div>
                 <div className=" cursor-pointer">
                     {
-                        inputActive ? loading? <Loader /> : <GiConfirmed className="size-6" onClick={handleSubmit} /> : 
-                        value ? <MdModeEdit className="size-5" onClick={() => {
+                        inputActive ? loading? <Loader /> : <SiTicktick className="size-6 text-green-600" onClick={handleSubmit} /> : 
+                        value ? <MdModeEdit className="size-5"  onClick={() => {
                             setInputActive(true)
-                        }} />
+                        }}/>
                         : <IoIosAdd className="size-7" onClick={() => {
                             if(!value){
                                 setInputActive(true)
