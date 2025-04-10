@@ -17,12 +17,12 @@ export default function Modal({
 
     if (open){
         return (
-            <div id="modal-background" className="h-svh w-screen z-200 bg-opacity-0 bg-[rgba(0,0,0,0.5)] absolute top-0 left-0 flex justify-center items-center" onClick={(event) => {
+            <div id="modal-background" className="h-svh w-screen z-200 bg-opacity-0 bg-[rgba(0,0,0,0.5)] shadow-2xl absolute top-0 left-0 flex justify-center items-center" onClick={(event) => {
                 if(event.target == document.getElementById('modal-background')){
                     setOpen(false)
                 }
             }} >
-                <div className="h-fit w-[90%] bg-white rounded-xl p-5" >
+                <div className="h-fit w-[90%] max-w-[500px] bg-white rounded-xl p-5" >
                     <div className="flex w-full items-center justify-between" >
                         <div className="text-xl text-black font-normal" >{title}</div>
                         <IoCloseOutline className="size-6 cursor-pointer text-gray-500 rounded-lg hover:bg-gray-100 hover:text-black" onClick={() => {

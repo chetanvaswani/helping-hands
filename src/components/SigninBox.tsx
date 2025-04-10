@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import React from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Loader from "./RingLoader";
 
 export default function SigninBox(){
     const MobNumRegex : RegExp = /^[6-9]\d{9}$/;
@@ -33,7 +34,7 @@ export default function SigninBox(){
             return
         }
         setDisabled(true)
-        setBtnText("Sending Opt...")
+        setBtnText("Sending Otp...")
         axios.post("/api/send-otp", {
             mobNum: mobNum
         }).then(() => {
@@ -115,8 +116,8 @@ export default function SigninBox(){
             <div className="text-center w-[90%] text-gray-400 text-sm font-semibold" ref={alerDivtRef}></div>
             <div className=" w-full flex-col flex ">
                 {
-                    otpSent ? <Button variant="dark" text={btnText} disabled={disabled} onClick={handleLogin} />
-                    : <Button text={btnText} variant="dark" disabled={disabled} onClick={handleOtpSend} />
+                    otpSent ? <Button variant="dark" text={btnText} disabled={disabled} onClick={handleLogin} startIcon={disabled ? <Loader /> : null} />
+                    : <Button text={btnText} variant="dark" disabled={disabled} onClick={handleOtpSend} startIcon={disabled ? <Loader /> : null} />
                 }
             </div>
             {

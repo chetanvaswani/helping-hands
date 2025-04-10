@@ -8,11 +8,10 @@ import { haversineDistance } from "@/utils/findDistance";
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
 
-export default function AddressDisplay(){
+export default function AddressDisplay({getPermissionModal, setGetPermissionModal}){
     const [addressName, setAddressName] = useState("Looking up your address...");
     const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
     const [addresses, setAddresses] = useRecoilState(addressesAtom);
-    const [getPermissionModal, setGetPermissionModal] = useState(false);
     // console.log(currentAddressState, addresses)
   
     function isIOSSafari() {
@@ -89,12 +88,11 @@ export default function AddressDisplay(){
         <div>
             {
                 getPermissionModal ? 
-                <Modal title="Allow Loction access" open={getPermissionModal} setOpen={(setGetPermissionModal)}>
-                    <div className="flex w-full gap-5 py-5">
-                        <div className="w-[50%] flex flex-col">
+                <Modal title="Grant access to your current location" open={getPermissionModal} setOpen={(setGetPermissionModal)}>
+                    <div className="flex flex-col w-full gap-3 mt-5 mb-3">
+                        <div className="w-full flex flex-col">
                             <Button text="Allow" variant="dark" onClick={() => {
-                              const geolocation = new Geolocation()
-                              geolocation.getCurrentPosition(
+                              navigator.geolocation.getCurrentPosition(
                                 showPosition,
                                 (error) => {
                                   console.error("Error in getCurrentPosition", error);
@@ -104,10 +102,11 @@ export default function AddressDisplay(){
                               setGetPermissionModal(false)
                             }}/>
                         </div>
-                        <div className="w-[50%] flex flex-col border-1 border-gray-100 rounded-lg">
+                        <div className="w-full flex flex-col border-1 border-gray-200 rounded-lg">
                             <Button text="Deny" variant="light" onClick={() => {
-                            setAddressName("Location access Denied")
-                            setGetPermissionModal(false)
+                              setAddressName("Location access Denied")
+                              setGetPermissionModal(false)
+                              setCurrentAddressState(null)
                             }}/>
                         </div>
                     </div>

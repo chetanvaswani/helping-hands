@@ -1,6 +1,7 @@
 "use client"
 import { ReactElement } from "react";
 import React from "react";
+import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import AddressDisplay from "./AddresDisplay";
@@ -12,6 +13,7 @@ interface LocationSelectorInterface{
 }
 
 export default function LocationSelector( {title, Icon }: LocationSelectorInterface) {
+  const [getPermissionModal, setGetPermissionModal] = useState(false);
   const router = useRouter();
 
   return (
@@ -26,11 +28,15 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
           </div>
           <div className="w-full text-sm text-black/60 flex items-end gap-1">
             <React.Suspense fallback={<div>Looking up your address...</div>}>
-                <AddressDisplay />
+                <AddressDisplay getPermissionModal={getPermissionModal} setGetPermissionModal={setGetPermissionModal} />
             </React.Suspense>
           </div>
         </div>
-        {Icon}
+        <div onClick={() => {
+          setGetPermissionModal(true)
+        }}>
+          {Icon}
+        </div>
     </div>
     </>
   );

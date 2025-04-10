@@ -2,10 +2,17 @@ import { GoHome } from "react-icons/go";
 import { SlOptionsVertical } from "react-icons/sl";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiBuildingOffice } from "react-icons/pi";
-// import { useRecoilState } from "recoil";
-// import { addressesAtom } from "@/store/atoms/addressesAtom";
+import { useRecoilState } from "recoil";
+import { addressesAtom } from "@/store/atoms/addressesAtom";
 // import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
 import { toTitleCase } from "@/utils/toTitleCase";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaRegEdit } from "react-icons/fa";
+import Modal from "@/components/Modal";
+import { useState } from "react";
+import Button from "@/components/Button";
+import axios from "axios";
+import Loader from "@/components/RingLoader"
 
 
 interface AddressCardInterface{
@@ -14,13 +21,44 @@ interface AddressCardInterface{
     address: string,
     currDistance?: string,
     longitude?: string,
-    latitude?: string
+    latitude?: string,
+    id: number
 }
 
-export default function AddressCard({name, type, address, currDistance} : AddressCardInterface){
-    // const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
+export default function AddressCard({name, type, address, currDistance, id} : AddressCardInterface){
+    const [actionsModalOpen, setActionsModalOpen] = useState(false);
+    const [deleteConfirmationMoal, setDeleteConfirmationModal] = useState(false);
+    const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
+    const [actionState, setActionState] = useState<"delete"| "edit" | null>(null);
+    const [deleteBtnText, setDeleteBtnText] = useState("Yes")
     // const [currentAddress, setCurrentAddress] = useRecoilState(currentAddressAtom)
-    
+
+    const deleteAddressConfirmation = () => {
+        setActionsModalOpen(false)
+        setDeleteConfirmationModal(true)
+    }
+
+    const deleteAddress = () => {
+        setActionState("delete");
+        setDeleteBtnText("Deleting address");
+        axios.delete("/api/v1/address", {
+            data: { id: id }
+        }).then((res) => {
+            console.log(res)
+            if(res.data.status === "success" && savedAddresses){
+                setSavedAddresses((savedAddresses as any).filter((address => address.id !== id)))
+                setDeleteBtnText("Yes");
+                setActionState(null);
+                setDeleteConfirmationModal(false);
+            }
+        }).catch((err) => {
+            console.log(err)
+            setDeleteBtnText("Yes");
+            setActionState(null);
+            setDeleteConfirmationModal(false);
+        })
+    }
+
     return (
         <div className="w-full shadow-md p-5 gap-3 flex justify-evenly items-start rounded-lg h-fit bg-white" onClick={() => {
 
@@ -57,8 +95,33 @@ export default function AddressCard({name, type, address, currDistance} : Addres
                 </div>
             </div>
             <div className="w-[10%] flex flex-col gap-2 text-gray-500 items-end">
-                <SlOptionsVertical className="mt-1 cursor-pointer" />
+                <SlOptionsVertical className="mt-1 cursor-pointer" onClick={() => {
+                    setActionsModalOpen(true)
+                }} />
             </div>
+            <Modal title="Select an action" open={actionsModalOpen} setOpen={setActionsModalOpen}>
+                <div className="flex flex-col gap-3 mt-7 mb-3 w-full">
+                    <div className="flex flex-col w-full">
+                        <Button variant="dark" text="Delete Address" disabled={actionState !== null} startIcon={<RiDeleteBin6Line className="size-5" />} onClick={deleteAddressConfirmation} />
+                    </div>
+                    <div className="flex flex-col w-full border-1 border-gray-200 rounded-lg">
+                        <Button variant="light" text="Edit Address" disabled={actionState !== null} startIcon={<FaRegEdit className="size-5" />} />
+                    </div>
+                </div>
+            </Modal>
+            <Modal title="Are you sure you want to delete this address?" open={deleteConfirmationMoal} setOpen={setDeleteConfirmationModal}>
+                <div className="flex flex-col gap-3 mt-7 mb-3 w-full">
+                    <div className="flex flex-col w-full">
+                        <Button variant="dark" text={deleteBtnText} disabled={actionState !== null} startIcon={actionState === "delete"? <Loader />  : null} onClick={deleteAddress} />
+                    </div>
+                    <div className="flex flex-col w-full border-1 border-gray-200 rounded-lg">
+                        <Button variant="light" text="No" disabled={actionState !== null} onClick={() => {
+                            setDeleteConfirmationModal(false)
+                            setActionsModalOpen(true)
+                        }} />
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }

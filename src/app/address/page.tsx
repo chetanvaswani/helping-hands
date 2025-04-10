@@ -98,6 +98,7 @@ export default function Address() {
               return (
                 <div key={address.latitude + address.longitude} className="w-full">
                   <AddressCard
+                    id={address.id}
                     name={address.name}
                     type={address.type}
                     address={address.address}
