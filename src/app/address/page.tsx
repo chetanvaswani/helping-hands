@@ -6,8 +6,8 @@ import { MdAddLocationAlt } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { addressesAtom } from "@/store/atoms/addressesAtom";
-import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
+import { addressesAtom } from "@/store/atoms/addressAtoms";
+import { currentAddressAtom } from "@/store/atoms/addressAtoms";
 import { useState, useEffect } from "react";
 import {haversineDistance} from "@/utils/findDistance"
 import axios from "axios";

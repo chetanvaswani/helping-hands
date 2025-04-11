@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import Button from "./Button";
 import { useRecoilState } from "recoil";
-import {currentAddressAtom} from "../store/atoms/currentAddressAtom";
-import { addressesAtom } from "@/store/atoms/addressesAtom";
-import { locationAccessAtom } from "@/store/atoms/locationAccessAtom";
+import {currentAddressAtom} from "../store/atoms/addressAtoms";
+import { addressesAtom } from "@/store/atoms/addressAtoms";
+import { locationAccessAtom } from "@/store/atoms/addressAtoms";
 import { haversineDistance } from "@/utils/findDistance";
 import axios from "axios";
 import { useCallback, useEffect } from "react";
@@ -16,10 +16,10 @@ export default function LocationPermissionModal(){
     const [open, setOpen] = useState(locationAccessState.prompt);
 
     useEffect(() => {
-        setLocationAccessState({
-            access: locationAccessState.access,
+        setLocationAccessState(prev => ({
+            ...prev,
             prompt: open
-        })
+        }));
     }, [open])
 
     const showPosition = useCallback((position: GeolocationPosition) => {
@@ -71,17 +71,28 @@ export default function LocationPermissionModal(){
                 <div className="w-full flex flex-col">
                     <Button text="Allow" variant="dark" onClick={() => {
                         navigator.geolocation.getCurrentPosition(
-                            showPosition,
+                            (position: GeolocationPosition) => {
+                                showPosition(position)
+                                setLocationAccessState({
+                                    access: true,
+                                    prompt: false
+                                })
+                            },
                             (error) => {
                                 console.error("Error in getCurrentPosition", error);
-                                alert(error.message)
+                                alert(error.message);
+                                setLocationAccessState({
+                                    access: false,
+                                    prompt: false
+                                })
                                 // setAddressName(`Error: ${error.message}`);
+                            },
+                            {
+                                enableHighAccuracy: true, 
+                                timeout: 10000,
+                                maximumAge: 0
                             }
                         );
-                        setLocationAccessState({
-                            access: true,
-                            prompt: false
-                        })
                     }}/>
                 </div>
                 <div className="w-full flex flex-col border-1 border-gray-200 rounded-lg">

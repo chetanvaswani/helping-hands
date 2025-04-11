@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { addressesAtom } from "@/store/atoms/addressesAtom";
+import { addressesAtom } from "@/store/atoms/addressAtoms";
 
 import Button from "./Button"
 import Loader from "./RingLoader";
