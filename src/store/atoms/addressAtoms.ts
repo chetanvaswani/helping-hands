@@ -37,3 +37,8 @@ export const selectedAddressAtom = atom<Address | null>({
     key: "selectedAddressAtom",
     default: null,
 });
+
+export const editAddressAtom = atom<Address | null>({
+  key: "editAddressAtom",
+  default: null
+})

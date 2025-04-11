@@ -3,17 +3,14 @@ import { ReactElement } from "react";
 import React, {useEffect} from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import { currentAddressAtom } from "@/store/atoms/addressAtoms";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { locationAccessAtom } from "@/store/atoms/addressAtoms";
-import { selectedAddressAtom } from "@/store/atoms/addressAtoms";
-import { addressesAtom } from "@/store/atoms/addressAtoms";
-import { haversineDistance } from "@/utils/findDistance";
+import { locationAccessAtom, selectedAddressAtom, currentAddressAtom, addressesAtom } from "@/store/atoms/addressAtoms";
 import LocationPermissionModal from "@/components/LocationPermissionModal";
 import { toTitleCase } from "@/utils/toTitleCase";
 import { GoHome } from "react-icons/go";
 import { PiBuildingOffice } from "react-icons/pi";
 import { IoLocationOutline } from "react-icons/io5";
+import { haversineDistance } from "@/utils/findDistance";
 
 interface LocationSelectorInterface{
     Icon?: ReactElement
@@ -21,14 +18,13 @@ interface LocationSelectorInterface{
 
 export default function LocationSelector({ Icon }: LocationSelectorInterface) {
   const currentAddressState = useRecoilValue(currentAddressAtom);
-  const [locationAccessState, setLocationAccessState] = useRecoilState(locationAccessAtom);
+  const locationAccessState = useRecoilValue(locationAccessAtom);
   const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom);
   const savedAddresses = useRecoilValue(addressesAtom);
-
   const router = useRouter();
 
   useEffect(() => {
-    console.log("before",currentAddressState, savedAddresses, selectedAddressState)
+    console.log("before", currentAddressState, savedAddresses)
     if (currentAddressState && (savedAddresses as any)?.length > 0 && selectedAddressState === null){
         (savedAddresses as any).map((address) => {
             const distance = haversineDistance([address.latitude, address.longitude], [Number(currentAddressState.latitude), Number(currentAddressState.longitude)])
@@ -37,8 +33,8 @@ export default function LocationSelector({ Icon }: LocationSelectorInterface) {
             }
         })
     }
-    console.log("after",currentAddressState, savedAddresses, selectedAddressState)
-}, [currentAddressState, savedAddresses])
+    console.log("after", currentAddressState, savedAddresses)
+}, [savedAddresses, currentAddressState])
 
   return (
     <>
@@ -71,7 +67,7 @@ export default function LocationSelector({ Icon }: LocationSelectorInterface) {
                 selectedAddressState !== null ? 
                   selectedAddressState.address
                 : locationAccessState.access === null ? 
-                  "Grant Location access"
+                  "Checking for Location access..."
                 : locationAccessState.access === false ?
                   "Location access denied"
                 : locationAccessState && currentAddressState === null ?
@@ -85,18 +81,10 @@ export default function LocationSelector({ Icon }: LocationSelectorInterface) {
         </div>
         <div onClick={() => {
           setSelectedAddressState(null)
-          if (!locationAccessState.access){
-            setLocationAccessState({
-              access: locationAccessState.access,
-              prompt: true
-            })
-          }
         }}>
           {Icon}
         </div>
-        {
-          locationAccessState.prompt ? <LocationPermissionModal /> :  false
-        }
+        <LocationPermissionModal />
     </div>
     </>
   );

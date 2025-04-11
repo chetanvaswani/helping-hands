@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -16,32 +16,61 @@ import { RiArrowDownWideFill } from "react-icons/ri";
 import { IoLocationOutline } from "react-icons/io5";
 import { GoHome } from "react-icons/go";
 import { PiBuildingOffice } from "react-icons/pi";
+import { Address } from "@/schemas/AddressSchema";
+
+interface AddressDetailsFormInterface{
+  setDetailsFormOpen: Dispatch<SetStateAction<boolean>> | null,
+  coords: {
+    lat: number | string,
+    lng: number | string
+  },
+  formType?: string,
+  address? : Address
+}
 
 
-export default function AddressDetailsForm({setDetailsFormOpen, coords}){
+export default function AddressDetailsForm({setDetailsFormOpen, coords, address, formType="add"}: AddressDetailsFormInterface){
     const router = useRouter();
-    const [type, setType] = useState(null);
+    const [type, setType] = useState(address ? address.type : null);
     const alerDivtRef = useRef<HTMLInputElement | null>(null);
     const [addressDetails, setAddressDetails] = useState({
-      address: "",
-      type: type,
+      address: address?.address || "",
+      type: address?.type || type,
       latitude: coords.lat,
       longitude: coords.lng,
-      name: "",
+      name: address?.name || "",
     });
     const [landmark, setLandmark] = useState("");
     const [loading, setLoading] = useState(false);
-    const [ btnText, setBtnText ] = useState("Save Address");
+    const [ btnText, setBtnText ] = useState(`${formType === "add"? "Save Address": "Edit Address"}`);
     const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
     // console.log(savedAddresses)
-
-    // console.log(addressDetails)
   
     useEffect(() => {
-      setAddressDetails({
-        ...addressDetails,
-        type
-      })
+      // console.log(address)
+      // console.log(addressDetails)
+      if (address){
+        setAddressDetails({
+          ...addressDetails,
+          type,
+        })
+      } else {
+        if (type === "other" ){
+          setAddressDetails({
+            ...addressDetails,
+            type,
+            name: ""
+          })
+        } else {
+          setAddressDetails({
+            ...addressDetails,
+            type,
+            name: (type as any)
+          })
+        }
+      }
+
+
     }, [type])
 
     const clearAlertDiv = () => {
@@ -52,57 +81,110 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
         }, 1500)
     }
 
-    async function submitAddress() {
-        if (addressDetails.address === "" && alerDivtRef.current){
-            alerDivtRef.current.innerHTML = "Please enter your address";
-            clearAlertDiv();
-        } else if (addressDetails.type === null && alerDivtRef.current){
-            alerDivtRef.current.innerHTML = "Please select an address type";
-            clearAlertDiv();
-        } else if (addressDetails.type === "other" && addressDetails.name === "" && alerDivtRef.current){
-            alerDivtRef.current.innerHTML = "Please enter a name for your address";
-            clearAlertDiv();
-        } else {
-            setLoading(true);
-            setBtnText("Saving your address...");
-            if (landmark !== ""){
-              await setAddressDetails({
-                ...addressDetails,
-                address: addressDetails.address + landmark
-              })
-            }
-            console.log(addressDetails)
-            axios.post("/api/v1/address", addressDetails, {
-              headers: { "Content-Type": "application/json" },
-            }).then((res) => {
-                console.log(res)
-                if (savedAddresses !==  null){
-                  setSavedAddresses([
-                    ...savedAddresses,
-                    res.data.data
-                  ]as any)
-                } else {
-                  setSavedAddresses([ res.data.data ] as any)
-                }
-                setTimeout(() => {
-                  router.back()
-                }, 500)
-                if (alerDivtRef.current){
-                  alerDivtRef.current.innerHTML = "Address Saved Successfully!"
-                }
-                setBtnText("Success!");
-                clearAlertDiv()
-            }).catch((err) => {
-                console.log(err)
-                if (alerDivtRef.current){
-                  alerDivtRef.current.innerHTML = "Error saving address. Please try again!"
-                }
-                clearAlertDiv();
-                setLoading(false);
-                setBtnText("Save Address");
-            })
-        }
+    function checksBeforeSubmit(){
+      if (addressDetails.address === "" && alerDivtRef.current){
+        alerDivtRef.current.innerHTML = "Please enter your address";
+        clearAlertDiv();
+        return false
+      } else if (addressDetails.type === null && alerDivtRef.current){
+          alerDivtRef.current.innerHTML = "Please select an address type";
+          clearAlertDiv();
+          return false
+      } else if (addressDetails.type === "other" && addressDetails.name === "" && alerDivtRef.current){
+          alerDivtRef.current.innerHTML = "Please enter a name for your address";
+          clearAlertDiv();
+          return false
+      }
+      return true
+    }
 
+    async function submitAddress() {
+      if(checksBeforeSubmit()){
+        setLoading(true);
+        setBtnText("Saving your address...");
+        if (landmark !== ""){
+          await setAddressDetails({
+            ...addressDetails,
+            address: addressDetails.address + landmark
+          })
+        }
+        // console.log(addressDetails)
+        axios.post("/api/v1/address", addressDetails, {
+          headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            // console.log(res)
+            if (savedAddresses !==  null){
+              setSavedAddresses([
+                ...savedAddresses,
+                res.data.data
+              ]as any)
+            } else {
+              setSavedAddresses([ res.data.data ] as any)
+            }
+            setTimeout(() => {
+              router.back()
+            }, 500)
+            if (alerDivtRef.current){
+              alerDivtRef.current.innerHTML = "Address Saved Successfully!"
+            }
+            setBtnText("Success!");
+            clearAlertDiv()
+        }).catch(() => {
+            // console.log(err)
+            if (alerDivtRef.current){
+              alerDivtRef.current.innerHTML = "Error saving address. Please try again!"
+            }
+            clearAlertDiv();
+            setLoading(false);
+            setBtnText("Save Address");
+        })
+      }
+    }
+
+    async function editAddress(){
+      if(checksBeforeSubmit()){
+        checksBeforeSubmit()
+        setLoading(true);
+        setBtnText("Editing your address...");
+        if (landmark !== ""){
+          await setAddressDetails({
+            ...addressDetails,
+            address: addressDetails.address + landmark
+          })
+        }
+        axios.put("/api/v1/address", {
+          id: address?.id,
+          name: addressDetails.name,
+          type: addressDetails.type,
+          address: addressDetails.address
+        }, {
+          headers: { "Content-Type": "application/json" },
+        }).then((res) => {
+            // console.log(res)
+            const updatedAddress = res.data.data;
+            setSavedAddresses((prevAddresses) =>
+              (prevAddresses as any).map((prev) =>
+                prev.id === updatedAddress.id ? updatedAddress : prev
+              )
+            );
+            setTimeout(() => {
+              router.back()
+            }, 500)
+            if (alerDivtRef.current){
+              alerDivtRef.current.innerHTML = "Edited Address Successfully!"
+            }
+            setBtnText("Success!");
+            clearAlertDiv()
+        }).catch(() => {
+            // console.log(err)
+            if (alerDivtRef.current){
+              alerDivtRef.current.innerHTML = "Error editing address. Please try again!"
+            }
+            clearAlertDiv();
+            setLoading(false);
+            setBtnText("Edit Address");
+        })
+      }
     }
   
   
@@ -118,8 +200,16 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
               setDetailsFormOpen(false)
             }
           }}>
-            <h1 className="font-bold text-xl">Add Address Details</h1>
-            <RiArrowDownWideFill className="size-5 text-gray-800 stroke-1 mt-[2px]" />
+            <h1 className="font-bold text-xl">
+              {
+                formType === "add" ? "Add Address Details" : "Edit Address Details"
+              }
+            </h1>
+            {
+              formType === "add" ? 
+                <RiArrowDownWideFill className="size-5 text-gray-800 stroke-1 mt-[2px]" />
+              : false
+            }
         </div>
         <div className="w-[95%] flex gap-3">
             <AddressType selected={type} setSelected={setType} name="home" icon={<GoHome />} />
@@ -129,7 +219,7 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
         {
           type === "other" ? 
           <div className="w-[95%] flex gap-3">
-            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " placeholder="Save address as" onChange={(e) => {
+            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " value={addressDetails.name} placeholder="Save address as" onChange={(e) => {
                 setAddressDetails({
                     ...addressDetails,
                     name: e.target.value
@@ -138,7 +228,7 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
           </div> : false
         }
         <div className="w-[95%] flex gap-3">
-            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " placeholder="Enter complete address" onChange={(e) => {
+            <input type="text" className="w-full h-[55px] bg-white outline-0 shadow-lg rounded-lg p-2 " value={addressDetails.address} placeholder="Enter complete address" onChange={(e) => {
                 setAddressDetails({
                     ...addressDetails,
                     address: e.target.value
@@ -153,7 +243,11 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
         <div className="text-center w-[90%] text-gray-400 text-sm font-semibold" ref={alerDivtRef}></div>
         <div className="flex flex-col shadow-md w-[95%]">
           <Button text={btnText} variant="dark" startIcon={loading ? <Loader /> : null} disabled={loading} onClick={() =>{
-            submitAddress()
+            if (formType === "add"){
+              submitAddress()
+            } else if (formType === "edit"){
+              editAddress()
+            }
           }} />
         </div>
       </motion.div>

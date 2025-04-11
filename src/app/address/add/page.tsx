@@ -33,7 +33,6 @@ export default function AddAddress() {
   function SetCurrLocation(){
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
       setCurr([position.coords.longitude, position.coords.latitude])
-      // console.log([position.coords.longitude, position.coords.latitude])
       // mapInstance.setCenter([position.coords.longitude, position.coords.latitude])
       // console.log([position.coords.longitude, position.coords.latitude]),
       setUserLocation(true)
@@ -49,14 +48,14 @@ export default function AddAddress() {
   }
 
   useEffect(() => {
-    if (detailsFormOpen && mapRef.current){
+    if (detailsFormOpen && mapRef.current && geolocateRef.current){
       // console.log("hello")
       mapRef.current.dragPan.disable();
       mapRef.current.scrollZoom.disable();
       mapRef.current.doubleClickZoom.disable();
       mapRef.current.keyboard.disable();
       mapRef.current.touchZoomRotate.disable();
-      // mapRef.current.removeControl(geolocateRef.current);
+      mapRef.current.removeControl(geolocateRef.current);
     } else if (mapRef.current){
       mapRef.current.dragPan.enable();
       mapRef.current.scrollZoom.enable();
@@ -141,13 +140,14 @@ export default function AddAddress() {
         center: [curr[0],curr[1]],
         zoom: 16,
       });
-      mapRef.current = myMap
+      mapRef.current = myMap;
       // setMapInstance(myMap)
 
       // olaMaps
       // .addMarker({ offset: [0, 0], anchor: 'bottom' })
       // .setLngLat([81.3484238,21.2072361])
       // .addTo(myMap)
+
       const marker = olaMaps
         .addMarker({
           offset: [0, 6],
@@ -173,7 +173,7 @@ export default function AddAddress() {
         trackUserLocation: true,
       })
       
-      // myMap.addControl(geolocateRef.current)
+      myMap.addControl(geolocateRef.current)
       // console.log(curr)
       myMap.on("moveend", () => {
         const newCenter = myMap.getCenter(); // returns [lng, lat]

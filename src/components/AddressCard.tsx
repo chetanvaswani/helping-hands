@@ -3,9 +3,8 @@ import { GoHome } from "react-icons/go";
 import { SlOptionsVertical } from "react-icons/sl";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiBuildingOffice } from "react-icons/pi";
-import { useRecoilState } from "recoil";
-import { addressesAtom } from "@/store/atoms/addressAtoms";
-import { selectedAddressAtom } from "@/store/atoms/addressAtoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { selectedAddressAtom, addressesAtom, editAddressAtom } from "@/store/atoms/addressAtoms";
 import { toTitleCase } from "@/utils/toTitleCase";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
@@ -15,7 +14,6 @@ import Button from "@/components/Button";
 import axios from "axios";
 import Loader from "@/components/RingLoader";
 import { useRouter } from "next/navigation";
-
 
 
 interface AddressCardInterface{
@@ -35,7 +33,8 @@ export default function AddressCard({name, type, address, currDistance, id} : Ad
     const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
     const [actionState, setActionState] = useState<"delete"| "edit" | null>(null);
     const [deleteBtnText, setDeleteBtnText] = useState("Yes");
-    const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom)
+    const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom);
+    const setEditAddressState = useSetRecoilState(editAddressAtom)
 
     const deleteAddressConfirmation = () => {
         setActionsModalOpen(false)
@@ -120,7 +119,11 @@ export default function AddressCard({name, type, address, currDistance, id} : Ad
                         <Button variant="dark" text="Delete Address" disabled={actionState !== null} startIcon={<RiDeleteBin6Line className="size-5" />} onClick={deleteAddressConfirmation} />
                     </div>
                     <div className="flex flex-col w-full border-1 border-gray-200 rounded-lg">
-                        <Button variant="light" text="Edit Address" disabled={actionState !== null} startIcon={<FaRegEdit className="size-5" />} />
+                        <Button variant="light" text="Edit Address" disabled={actionState !== null} startIcon={<FaRegEdit className="size-5" />} onClick={() => {
+                            const address = (savedAddresses as any).find((address) => address.id == id)
+                            setEditAddressState(address)
+                            router.push('/address/edit')
+                        }} />
                     </div>
                 </div>
             </Modal>

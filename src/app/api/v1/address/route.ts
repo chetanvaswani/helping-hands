@@ -86,7 +86,7 @@ export async function DELETE(req: Request) {
         },
       },
     });
-    console.log(deleteResult)
+    // console.log(deleteResult)
     
     if (!deleteResult) {
       return NextResponse.json(
@@ -107,4 +107,64 @@ export async function DELETE(req: Request) {
     );
   }
 }
-  
+
+
+export async function PUT(req: Request) {
+  try {
+    // Retrieve the session
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.mobileNumber) {
+      return NextResponse.json(
+        { status: "failure", message: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+    const mobileNumber = session.user.mobileNumber;
+    const body = await req.json();
+    const { id, address, type } = body;
+    let {name} = body
+
+    if (type !== "other"){
+      name = type
+    }
+    
+    if (!id || !address || !type || !name) {
+      return NextResponse.json(
+        { status: "failure", message: "Missing required fields (id, address, type, and name are required)" },
+        { status: 400 }
+      );
+    }
+    
+    const existingAddress = await prisma.address.findUnique({
+      where: { id: Number(id) },
+      include: { User: true },
+    });
+    
+    if (!existingAddress || existingAddress.User.mobileNumber !== mobileNumber) {
+      return NextResponse.json(
+        { status: "failure", message: "Not authorized or address not found" },
+        { status: 403 }
+      );
+    }
+    
+    const updatedAddress = await prisma.address.update({
+      where: { id: Number(id) },
+      data: {
+        address,
+        type,
+        name
+      },
+    });
+    
+    return NextResponse.json(
+      { status: "success", data: updatedAddress },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error updating address:", error);
+    return NextResponse.json(
+      { status: "error", message: error.message },
+      { status: 500 }
+    );
+  }
+}
