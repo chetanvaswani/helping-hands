@@ -27,7 +27,7 @@ export default function Checkout(){
                     }} />
                 </div>
                 <div className="w-full">
-                    <LocationSelector title={"Home"} subTitle={"Vaishali Nagar Bhilai"} />
+                    <LocationSelector />
                 </div>
             </div>
             <div className=" w-[90%] flex items-center flex-col gap-4 mt-5">

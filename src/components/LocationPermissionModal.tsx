@@ -5,7 +5,6 @@ import { useRecoilState } from "recoil";
 import {currentAddressAtom} from "../store/atoms/currentAddressAtom";
 import { addressesAtom } from "@/store/atoms/addressesAtom";
 import { locationAccessAtom } from "@/store/atoms/locationAccessAtom";
-import { selectedAddressAtom } from "@/store/atoms/selectedAddressAtom";
 import { haversineDistance } from "@/utils/findDistance";
 import axios from "axios";
 import { useCallback, useEffect } from "react";
@@ -15,7 +14,6 @@ export default function LocationPermissionModal(){
     const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
     const [locationAccessState, setLocationAccessState] = useRecoilState(locationAccessAtom);
     const [open, setOpen] = useState(locationAccessState.prompt);
-    const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom)
 
     useEffect(() => {
         setLocationAccessState({
@@ -50,20 +48,6 @@ export default function LocationPermissionModal(){
         }
       }, [currentAddressState])
 
-    
-    const loadSavedAddresses = () => {
-        if (savedAddresses === null){
-            axios.get("/api/v1/addresses").then((res) => {
-              if (res.data.data.addresses.length > 0){
-                setSavedAddresses(res.data.data.addresses)
-              } else {
-                setSavedAddresses([] as any)
-              }
-            }).catch(() => {
-              setSavedAddresses([] as any)
-            })
-        }
-    }
 
 
     useEffect(() => {

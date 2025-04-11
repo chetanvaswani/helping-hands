@@ -17,13 +17,6 @@ import { IoLocationOutline } from "react-icons/io5";
 import { GoHome } from "react-icons/go";
 import { PiBuildingOffice } from "react-icons/pi";
 
-interface AddressDetailsFormInterface{
-  setDetailsFormOpen?: () => void,
-  coords: {
-    lat: string | number,
-    lng: string | number,
-  }
-}
 
 export default function AddressDetailsForm({setDetailsFormOpen, coords}){
     const router = useRouter();

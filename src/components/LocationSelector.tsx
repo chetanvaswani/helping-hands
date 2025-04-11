@@ -4,7 +4,7 @@ import React, {useEffect} from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { locationAccessAtom } from "@/store/atoms/locationAccessAtom";
 import { selectedAddressAtom } from "@/store/atoms/selectedAddressAtom";
 import { addressesAtom } from "@/store/atoms/addressesAtom";
@@ -17,10 +17,10 @@ interface LocationSelectorInterface{
 }
 
 export default function LocationSelector({ Icon }: LocationSelectorInterface) {
-  const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
+  const currentAddressState = useRecoilValue(currentAddressAtom);
   const [locationAccessState, setLocationAccessState] = useRecoilState(locationAccessAtom);
   const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom);
-  const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
+  const savedAddresses = useRecoilValue(addressesAtom);
 
   const router = useRouter();
 
