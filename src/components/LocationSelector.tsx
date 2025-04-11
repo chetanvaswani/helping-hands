@@ -11,6 +11,9 @@ import { addressesAtom } from "@/store/atoms/addressesAtom";
 import { haversineDistance } from "@/utils/findDistance";
 import LocationPermissionModal from "@/components/LocationPermissionModal";
 import { toTitleCase } from "@/utils/toTitleCase";
+import { GoHome } from "react-icons/go";
+import { PiBuildingOffice } from "react-icons/pi";
+import { IoLocationOutline } from "react-icons/io5";
 
 interface LocationSelectorInterface{
     Icon?: ReactElement
@@ -46,7 +49,18 @@ export default function LocationSelector({ Icon }: LocationSelectorInterface) {
           }}>
             <div className="flex items-end">
               {
-                selectedAddressState?.name ?  toTitleCase(selectedAddressState.name) : "Welcome"
+                selectedAddressState?.name ? 
+                  <div className="flex items-center gap-1 ">
+                    {
+                      selectedAddressState.type === "home" ? 
+                      <GoHome className="size-5 text-black" />
+                      : selectedAddressState.type === "work" ? 
+                      <PiBuildingOffice className="size-5 text-black" /> :
+                      <IoLocationOutline className="size-5 text-black" />
+                    }
+                    {toTitleCase(selectedAddressState.name)}
+                  </div>
+                : "Welcome"
               }
             </div>
             <IoIosArrowDown className="mt-1 size-4" />

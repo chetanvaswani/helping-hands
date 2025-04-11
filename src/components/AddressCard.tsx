@@ -51,6 +51,9 @@ export default function AddressCard({name, type, address, currDistance, id} : Ad
             console.log(res)
             if(res.data.status === "success" && savedAddresses){
                 setSavedAddresses((savedAddresses as any).filter((address => address.id !== id)))
+                if(selectedAddressState?.id === id){
+                    setSelectedAddressState(null)
+                }
                 setDeleteBtnText("Yes");
                 setActionState(null);
                 setDeleteConfirmationModal(false);

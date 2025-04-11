@@ -74,6 +74,7 @@ export default function LocationPermissionModal(){
                             showPosition,
                             (error) => {
                                 console.error("Error in getCurrentPosition", error);
+                                alert(error.message)
                                 // setAddressName(`Error: ${error.message}`);
                             }
                         );
