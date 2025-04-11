@@ -17,6 +17,14 @@ import { IoLocationOutline } from "react-icons/io5";
 import { GoHome } from "react-icons/go";
 import { PiBuildingOffice } from "react-icons/pi";
 
+interface AddressDetailsFormInterface{
+  setDetailsFormOpen?: () => void,
+  coords: {
+    lat: string | number,
+    lng: string | number,
+  }
+}
+
 export default function AddressDetailsForm({setDetailsFormOpen, coords}){
     const router = useRouter();
     const [type, setType] = useState(null);
@@ -113,8 +121,10 @@ export default function AddressDetailsForm({setDetailsFormOpen, coords}){
       transition={{ type: "tween", duration: 0.3 }}
       className="h-[65%] fixed bottom-0 bg-gray-100 left-[1%] gap-5 rounded-lg z-100 overflow-hidden w-[98%] flex flex-col items-center cursor-pointer">
         <div className="h-[50px] px-3 flex items-center border-b-1 border-gray-200 shadow-sm bg-white gap-2 justify-start w-full z-100 " onClick={() => {
+            if (setDetailsFormOpen){
               setDetailsFormOpen(false)
-            }}>
+            }
+          }}>
             <h1 className="font-bold text-xl">Add Address Details</h1>
             <RiArrowDownWideFill className="size-5 text-gray-800 stroke-1 mt-[2px]" />
         </div>

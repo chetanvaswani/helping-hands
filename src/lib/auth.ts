@@ -74,6 +74,7 @@ export const authOptions = {
           // console.log("console reached jwt callback")
           if (user){
             token.mobileNumber = user.mobileNumber
+            token.name = user.name
           }
           return token
         },
@@ -81,7 +82,8 @@ export const authOptions = {
           // console.log("console reached session callback")
           // console.log(session, token)
           session.user = {
-            mobileNumber: token.mobileNumber
+            mobileNumber: token.mobileNumber,
+            name: token.name
           }
           return session;
         },

@@ -1,10 +1,11 @@
+"use client"
 import { GoHome } from "react-icons/go";
 import { SlOptionsVertical } from "react-icons/sl";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiBuildingOffice } from "react-icons/pi";
 import { useRecoilState } from "recoil";
 import { addressesAtom } from "@/store/atoms/addressesAtom";
-// import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
+import { selectedAddressAtom } from "@/store/atoms/selectedAddressAtom";
 import { toTitleCase } from "@/utils/toTitleCase";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
@@ -12,7 +13,9 @@ import Modal from "@/components/Modal";
 import { useState } from "react";
 import Button from "@/components/Button";
 import axios from "axios";
-import Loader from "@/components/RingLoader"
+import Loader from "@/components/RingLoader";
+import { useRouter } from "next/navigation";
+
 
 
 interface AddressCardInterface{
@@ -26,12 +29,13 @@ interface AddressCardInterface{
 }
 
 export default function AddressCard({name, type, address, currDistance, id} : AddressCardInterface){
+    const router = useRouter()
     const [actionsModalOpen, setActionsModalOpen] = useState(false);
     const [deleteConfirmationMoal, setDeleteConfirmationModal] = useState(false);
     const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
     const [actionState, setActionState] = useState<"delete"| "edit" | null>(null);
-    const [deleteBtnText, setDeleteBtnText] = useState("Yes")
-    // const [currentAddress, setCurrentAddress] = useRecoilState(currentAddressAtom)
+    const [deleteBtnText, setDeleteBtnText] = useState("Yes");
+    const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom)
 
     const deleteAddressConfirmation = () => {
         setActionsModalOpen(false)
@@ -59,11 +63,17 @@ export default function AddressCard({name, type, address, currDistance, id} : Ad
         })
     }
 
+    const changeSelectedAddress = () => {
+        console.log((savedAddresses as any).find((address) => address.id === id));
+        setSelectedAddressState((savedAddresses as any).find((address) => address.id === id));
+        router.back();
+    }
+
     return (
         <div className="w-full shadow-md p-5 gap-3 flex justify-evenly items-start rounded-lg h-fit bg-white" onClick={() => {
 
         }}>
-            <div className="flex flex-col gap-1 items-center">
+            <div className="flex flex-col gap-1 items-center" onClick={changeSelectedAddress}>
                 {
                     type === "home" ? 
                     <GoHome className="size-5 text-gray-600" />
@@ -83,12 +93,14 @@ export default function AddressCard({name, type, address, currDistance, id} : Ad
                         : false
                 }
             </div>
-            <div className="w-[80%] flex flex-col -mt-1">
+            <div className="w-[80%] flex flex-col -mt-1" onClick={changeSelectedAddress}>
                 <div className="font-semibold gap-1 items-center flex text-base">
                     <span>{toTitleCase(name)}</span>
-                    {/* <div className="text-[9px] px-3 py-[2px] rounded-lg bg-black text-white">
-                        CURRENT LOCATION
-                    </div> */}
+                    {
+                        selectedAddressState && selectedAddressState.id === id ? 
+                        <span className="bg-black text-white mt-[1px] rounded-md text-[8px] py-[1px] px-1">Selected Address</span>
+                        : false
+                    }
                 </div>
                 <div className="text-sm">
                     {address}

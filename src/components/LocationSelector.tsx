@@ -1,20 +1,41 @@
 "use client"
 import { ReactElement } from "react";
-import React from "react";
-import { useState } from "react";
+import React, {useEffect} from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import AddressDisplay from "./AddresDisplay";
+import { currentAddressAtom } from "@/store/atoms/currentAddressAtom";
+import { useRecoilState } from "recoil";
+import { locationAccessAtom } from "@/store/atoms/locationAccessAtom";
+import { selectedAddressAtom } from "@/store/atoms/selectedAddressAtom";
+import { addressesAtom } from "@/store/atoms/addressesAtom";
+import { haversineDistance } from "@/utils/findDistance";
+import LocationPermissionModal from "@/components/LocationPermissionModal";
+import { toTitleCase } from "@/utils/toTitleCase";
 
 interface LocationSelectorInterface{
-    title: string,
-    subTitle: string,
     Icon?: ReactElement
 }
 
-export default function LocationSelector( {title, Icon }: LocationSelectorInterface) {
-  const [getPermissionModal, setGetPermissionModal] = useState(false);
+export default function LocationSelector({ Icon }: LocationSelectorInterface) {
+  const [currentAddressState, setCurrentAddressState] = useRecoilState(currentAddressAtom);
+  const [locationAccessState, setLocationAccessState] = useRecoilState(locationAccessAtom);
+  const [selectedAddressState, setSelectedAddressState] = useRecoilState(selectedAddressAtom);
+  const [savedAddresses, setSavedAddresses] = useRecoilState(addressesAtom);
+
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("before",currentAddressState, savedAddresses, selectedAddressState)
+    if (currentAddressState && (savedAddresses as any)?.length > 0 && selectedAddressState === null){
+        (savedAddresses as any).map((address) => {
+            const distance = haversineDistance([address.latitude, address.longitude], [Number(currentAddressState.latitude), Number(currentAddressState.longitude)])
+            if (distance < 20){
+                setSelectedAddressState(address)
+            }
+        })
+    }
+    console.log("after",currentAddressState, savedAddresses, selectedAddressState)
+}, [currentAddressState, savedAddresses])
 
   return (
     <>
@@ -23,20 +44,45 @@ export default function LocationSelector( {title, Icon }: LocationSelectorInterf
           <div className="flex items-center gap-1" onClick={() => {
               router.push("/address")
           }}>
-            <div className="flex items-end">{title}</div>
+            <div className="flex items-end">
+              {
+                selectedAddressState?.name ?  toTitleCase(selectedAddressState.name) : "Welcome"
+              }
+            </div>
             <IoIosArrowDown className="mt-1 size-4" />
           </div>
           <div className="w-full text-sm text-black/60 flex items-end gap-1">
-            <React.Suspense fallback={<div>Looking up your address...</div>}>
-                <AddressDisplay getPermissionModal={getPermissionModal} setGetPermissionModal={setGetPermissionModal} />
-            </React.Suspense>
+            <p className="max-w-full line-clamp-1 overflow-hidden">
+              { 
+                selectedAddressState !== null ? 
+                  selectedAddressState.address
+                : locationAccessState.access === null ? 
+                  "Grant Location access"
+                : locationAccessState.access === false ?
+                  "Location access denied"
+                : locationAccessState && currentAddressState === null ?
+                  "Looking up your Address..."
+                : locationAccessState && currentAddressState !== null ?
+                  currentAddressState.address
+                : false
+              }
+            </p>
           </div>
         </div>
         <div onClick={() => {
-          setGetPermissionModal(true)
+          setSelectedAddressState(null)
+          if (!locationAccessState.access){
+            setLocationAccessState({
+              access: locationAccessState.access,
+              prompt: true
+            })
+          }
         }}>
           {Icon}
         </div>
+        {
+          locationAccessState.prompt ? <LocationPermissionModal /> :  false
+        }
     </div>
     </>
   );

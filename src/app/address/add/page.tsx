@@ -33,6 +33,7 @@ export default function AddAddress() {
   function SetCurrLocation(){
     navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
       setCurr([position.coords.longitude, position.coords.latitude])
+      // console.log([position.coords.longitude, position.coords.latitude])
       // mapInstance.setCenter([position.coords.longitude, position.coords.latitude])
       // console.log([position.coords.longitude, position.coords.latitude]),
       setUserLocation(true)
